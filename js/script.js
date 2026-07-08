@@ -896,10 +896,93 @@
     }
   }
 
+  /**
+   * Helper to return the base color for standard categories.
+   * Food -> #10B981, Transport -> #3B82F6, Fun -> #8B5CF6, Other -> #F59E0B
+   */
+  function getCategoryBaseColor(category) {
+    const cat = (category || '').toLowerCase();
+    if (cat.includes('food')) return '#10B981';
+    if (cat.includes('transport') || cat.includes('travel')) return '#3B82F6';
+    if (cat.includes('fun') || cat.includes('entertainment')) return '#8B5CF6';
+    return '#F59E0B';
+  }
+
+  /**
+   * Helper to create a premium gradient for chart slices.
+   */
+  function getCategoryGradient(ctx, category, chartArea) {
+    const x0 = chartArea.left;
+    const y0 = chartArea.top;
+    const x1 = chartArea.right;
+    const y1 = chartArea.bottom;
+
+    const grad = ctx.createLinearGradient(x0, y0, x1, y1);
+    const cat = (category || '').toLowerCase();
+
+    if (cat.includes('food')) {
+      grad.addColorStop(0, '#34D399');
+      grad.addColorStop(1, '#059669');
+    } else if (cat.includes('transport') || cat.includes('travel')) {
+      grad.addColorStop(0, '#60A5FA');
+      grad.addColorStop(1, '#2563EB');
+    } else if (cat.includes('fun') || cat.includes('entertainment')) {
+      grad.addColorStop(0, '#A78BFA');
+      grad.addColorStop(1, '#7C3AED');
+    } else {
+      grad.addColorStop(0, '#FBBF24');
+      grad.addColorStop(1, '#D97706');
+    }
+    return grad;
+  }
+
+  /**
+   * Re-renders the custom legend container.
+   */
+  function renderCustomLegend(labels, values) {
+    const legendContainer = document.getElementById('chart-legend-container');
+    if (!legendContainer) return;
+
+    legendContainer.innerHTML = '';
+    const totalExpense = values.reduce((sum, val) => sum + val, 0);
+
+    labels.forEach((label, index) => {
+      const val = values[index];
+      const pct = totalExpense > 0 ? ((val / totalExpense) * 100).toFixed(0) : 0;
+
+      let gradStyle = '';
+      const cat = label.toLowerCase();
+      if (cat.includes('food')) {
+        gradStyle = 'linear-gradient(135deg, #34D399, #059669)';
+      } else if (cat.includes('transport') || cat.includes('travel')) {
+        gradStyle = 'linear-gradient(135deg, #60A5FA, #2563EB)';
+      } else if (cat.includes('fun') || cat.includes('entertainment')) {
+        gradStyle = 'linear-gradient(135deg, #A78BFA, #7C3AED)';
+      } else {
+        gradStyle = 'linear-gradient(135deg, #FBBF24, #D97706)';
+      }
+
+      const legendItem = document.createElement('div');
+      legendItem.className = 'legend-item';
+      legendItem.innerHTML = `
+        <div class="legend-item__main">
+          <span class="legend-item__dot" style="background: ${gradStyle}"></span>
+          <span class="legend-item__name">${label}</span>
+        </div>
+        <div class="legend-item__values">
+          <span class="legend-item__percentage">${pct}%</span>
+          <span class="legend-item__amount">${formatRupiah(val)}</span>
+        </div>
+      `;
+      legendContainer.appendChild(legendItem);
+    });
+  }
+
   /** Render or update the expense pie chart based on current data. */
   function renderExpenseChart() {
     const canvas = document.getElementById('expense-chart');
     const emptyState = document.getElementById('chart-empty-state');
+    const layout = document.querySelector('.chart-container-layout');
 
     if (!canvas || typeof Chart === 'undefined') {
       if (emptyState) {
@@ -914,6 +997,9 @@
 
     canvas.hidden = !hasData;
     emptyState.hidden = hasData;
+    if (layout) {
+      layout.style.display = hasData ? 'flex' : 'none';
+    }
 
     if (!hasData) {
       // Destroy stale chart if it exists so canvas is clean
@@ -924,51 +1010,59 @@
       return;
     }
 
-    // Read the current surface color from CSS variables so the border
-    // between slices always matches the card background in both themes.
-    const borderColor = getComputedStyle(document.documentElement)
-      .getPropertyValue('--color-surface').trim() || '#ffffff';
-
-    const backgroundColors = labels.map((_, i) => getChartColor(i));
-
     if (expenseChart) {
       // Update in-place — smoother than destroy + recreate
       expenseChart.data.labels = labels;
       expenseChart.data.datasets[0].data = values;
-      expenseChart.data.datasets[0].backgroundColor = backgroundColors;
-      expenseChart.data.datasets[0].borderColor = borderColor;
       expenseChart.update();
+      renderCustomLegend(labels, values);
       return;
     }
 
     // First render — create the instance
     expenseChart = new Chart(canvas, {
-      type: 'pie',
+      type: 'doughnut',
       data: {
         labels,
         datasets: [{
           data: values,
-          backgroundColor: backgroundColors,
-          borderColor: borderColor,
-          borderWidth: 2,
+          backgroundColor: function(context) {
+            const chart = context.chart;
+            const {ctx, chartArea} = chart;
+            const label = chart.data.labels[context.dataIndex];
+            if (!chartArea) {
+              return getCategoryBaseColor(label);
+            }
+            return getCategoryGradient(ctx, label, chartArea);
+          },
+          borderWidth: 0,
+          borderRadius: 8,
+          spacing: 6,
+          hoverOffset: 15
         }],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        cutout: '65%',
+        animation: {
+          duration: 1000,
+          easing: 'easeOutQuart'
+        },
         plugins: {
           legend: {
-            position: 'bottom',
-            labels: {
-              // Use CSS variable for legend text so it adapts to dark mode
-              color: getComputedStyle(document.documentElement)
-                .getPropertyValue('--color-text-secondary').trim(),
-              padding: 16,
-              boxWidth: 12,
-              font: { size: 12 },
-            },
+            display: false
           },
           tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            titleColor: '#ffffff',
+            bodyColor: '#ffffff',
+            borderColor: 'rgba(255, 255, 255, 0.1)',
+            borderWidth: 1,
+            padding: 12,
+            cornerRadius: 12,
+            boxPadding: 8,
+            usePointStyle: true,
             callbacks: {
               label(context) {
                 const label = context.label || 'Unknown';
@@ -983,6 +1077,8 @@
         },
       },
     });
+
+    renderCustomLegend(labels, values);
   }
 
   /**
