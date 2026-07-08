@@ -897,47 +897,60 @@
   }
 
   /**
-   * Helper to return the base color for standard categories.
-   * Food -> #10B981, Transport -> #3B82F6, Fun -> #8B5CF6, Other -> #F59E0B
+   * Defined color styles for premium category rendering.
    */
-  function getCategoryBaseColor(category) {
-    const cat = (category || '').toLowerCase();
-    if (cat.includes('food')) return '#10B981';
-    if (cat.includes('transport') || cat.includes('travel')) return '#3B82F6';
-    if (cat.includes('fun') || cat.includes('entertainment')) return '#8B5CF6';
-    return '#F59E0B';
-  }
+  const PREDEFINED_COLORS = {
+    'food & drink': { base: '#10B981', gradStart: '#34D399', gradEnd: '#059669' },
+    'food': { base: '#10B981', gradStart: '#34D399', gradEnd: '#059669' },
+    'transport': { base: '#3B82F6', gradStart: '#60A5FA', gradEnd: '#2563EB' },
+    'travel': { base: '#06B6D4', gradStart: '#22D3EE', gradEnd: '#0891B2' },
+    'fun': { base: '#8B5CF6', gradStart: '#A78BFA', gradEnd: '#7C3AED' },
+    'entertainment': { base: '#8B5CF6', gradStart: '#A78BFA', gradEnd: '#7C3AED' },
+    'shopping': { base: '#EC4899', gradStart: '#F472B6', gradEnd: '#DB2777' },
+    'housing': { base: '#6366F1', gradStart: '#818CF8', gradEnd: '#4F46E5' },
+    'health': { base: '#14B8A6', gradStart: '#2DD4BF', gradEnd: '#0F766E' },
+    'education': { base: '#F97316', gradStart: '#FB923C', gradEnd: '#EA580C' },
+    'utilities': { base: '#EAB308', gradStart: '#FDE047', gradEnd: '#CA8A04' },
+    'subscription': { base: '#D946EF', gradStart: '#F553F6', gradEnd: '#C026D3' }
+  };
 
   /**
-   * Helper to create a premium gradient for chart slices.
+   * Helper to retrieve consistent base and gradient colors for a category.
+   * Features dynamic HSL generation for custom/unknown categories.
    */
-  function getCategoryGradient(ctx, category, chartArea) {
-    const x0 = chartArea.left;
-    const y0 = chartArea.top;
-    const x1 = chartArea.right;
-    const y1 = chartArea.bottom;
-
-    const grad = ctx.createLinearGradient(x0, y0, x1, y1);
-    const cat = (category || '').toLowerCase();
-
-    if (cat.includes('food')) {
-      grad.addColorStop(0, '#34D399');
-      grad.addColorStop(1, '#059669');
-    } else if (cat.includes('transport') || cat.includes('travel')) {
-      grad.addColorStop(0, '#60A5FA');
-      grad.addColorStop(1, '#2563EB');
-    } else if (cat.includes('fun') || cat.includes('entertainment')) {
-      grad.addColorStop(0, '#A78BFA');
-      grad.addColorStop(1, '#7C3AED');
-    } else {
-      grad.addColorStop(0, '#FBBF24');
-      grad.addColorStop(1, '#D97706');
+  function getCategoryColors(category) {
+    const cat = (category || '').toLowerCase().trim();
+    if (PREDEFINED_COLORS[cat]) {
+      return PREDEFINED_COLORS[cat];
     }
-    return grad;
+    // Try substring match
+    for (const key of Object.keys(PREDEFINED_COLORS)) {
+      if (cat.includes(key)) {
+        return PREDEFINED_COLORS[key];
+      }
+    }
+    // Hash-based dynamic generation to keep colors distinct and beautiful
+    let hash = 0;
+    for (let i = 0; i < cat.length; i++) {
+      hash = cat.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const h = Math.abs(hash) % 360;
+    const s = 65 + (Math.abs(hash >> 1) % 15); // 65-80% saturation
+    const l = 45 + (Math.abs(hash >> 2) % 10); // 45-55% lightness
+    
+    return {
+      base: `hsl(${h}, ${s}%, ${l}%)`,
+      gradStart: `hsl(${h}, ${s}%, ${l + 10}%)`,
+      gradEnd: `hsl(${h}, ${s}%, ${l - 10}%)`
+    };
   }
+
+  // Track expanded state for legend
+  let legendExpanded = false;
 
   /**
    * Re-renders the custom legend container.
+   * Shows a max of 4 items initially with an expand toggle for better readability.
    */
   function renderCustomLegend(labels, values) {
     const legendContainer = document.getElementById('chart-legend-container');
@@ -946,36 +959,67 @@
     legendContainer.innerHTML = '';
     const totalExpense = values.reduce((sum, val) => sum + val, 0);
 
-    labels.forEach((label, index) => {
-      const val = values[index];
-      const pct = totalExpense > 0 ? ((val / totalExpense) * 100).toFixed(0) : 0;
+    // Build legend items list sorted by highest amount first
+    const items = labels.map((label, index) => ({
+      label,
+      val: values[index],
+      pct: totalExpense > 0 ? ((values[index] / totalExpense) * 100).toFixed(0) : 0
+    })).sort((a, b) => b.val - a.val);
 
-      let gradStyle = '';
-      const cat = label.toLowerCase();
-      if (cat.includes('food')) {
-        gradStyle = 'linear-gradient(135deg, #34D399, #059669)';
-      } else if (cat.includes('transport') || cat.includes('travel')) {
-        gradStyle = 'linear-gradient(135deg, #60A5FA, #2563EB)';
-      } else if (cat.includes('fun') || cat.includes('entertainment')) {
-        gradStyle = 'linear-gradient(135deg, #A78BFA, #7C3AED)';
-      } else {
-        gradStyle = 'linear-gradient(135deg, #FBBF24, #D97706)';
-      }
+    const limit = 4;
+    const showToggle = items.length > limit;
+    const itemsToShow = (showToggle && !legendExpanded) ? items.slice(0, limit) : items;
+
+    itemsToShow.forEach((item) => {
+      const colors = getCategoryColors(item.label);
+      const gradStyle = `linear-gradient(135deg, ${colors.gradStart}, ${colors.gradEnd})`;
 
       const legendItem = document.createElement('div');
       legendItem.className = 'legend-item';
       legendItem.innerHTML = `
         <div class="legend-item__main">
           <span class="legend-item__dot" style="background: ${gradStyle}"></span>
-          <span class="legend-item__name">${label}</span>
+          <span class="legend-item__name">${item.label}</span>
         </div>
         <div class="legend-item__values">
-          <span class="legend-item__percentage">${pct}%</span>
-          <span class="legend-item__amount">${formatRupiah(val)}</span>
+          <span class="legend-item__percentage">${item.pct}%</span>
+          <span class="legend-item__amount">${formatRupiah(item.val)}</span>
         </div>
       `;
       legendContainer.appendChild(legendItem);
     });
+
+    if (showToggle) {
+      const toggleBtn = document.createElement('button');
+      toggleBtn.type = 'button';
+      toggleBtn.className = 'btn btn--legend-toggle';
+      
+      if (legendExpanded) {
+        toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Show Less';
+      } else {
+        const remainingCount = items.length - limit;
+        toggleBtn.innerHTML = `<i class="fa-solid fa-chevron-down"></i> Show More (+${remainingCount})`;
+      }
+      
+      toggleBtn.addEventListener('click', () => {
+        legendExpanded = !legendExpanded;
+        renderCustomLegend(labels, values);
+      });
+      
+      legendContainer.appendChild(toggleBtn);
+    }
+  }
+
+  // Register custom tooltip positioner to place it exactly in the center of the doughnut hole
+  if (typeof Chart !== 'undefined' && Chart.Tooltip && Chart.Tooltip.positioners && !Chart.Tooltip.positioners.centerOfDoughnut) {
+    Chart.Tooltip.positioners.centerOfDoughnut = function(elements) {
+      if (!elements || !elements.length) return false;
+      const chart = this.chart;
+      return {
+        x: chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2,
+        y: chart.chartArea.top + (chart.chartArea.bottom - chart.chartArea.top) / 2
+      };
+    };
   }
 
   /** Render or update the expense pie chart based on current data. */
@@ -1002,7 +1046,6 @@
     }
 
     if (!hasData) {
-      // Destroy stale chart if it exists so canvas is clean
       if (expenseChart) {
         expenseChart.destroy();
         expenseChart = null;
@@ -1011,7 +1054,6 @@
     }
 
     if (expenseChart) {
-      // Update in-place — smoother than destroy + recreate
       expenseChart.data.labels = labels;
       expenseChart.data.datasets[0].data = values;
       expenseChart.update();
@@ -1030,21 +1072,32 @@
             const chart = context.chart;
             const {ctx, chartArea} = chart;
             const label = chart.data.labels[context.dataIndex];
+            const colors = getCategoryColors(label);
             if (!chartArea) {
-              return getCategoryBaseColor(label);
+              return colors.base;
             }
-            return getCategoryGradient(ctx, label, chartArea);
+            const x0 = chartArea.left;
+            const y0 = chartArea.top;
+            const x1 = chartArea.right;
+            const y1 = chartArea.bottom;
+            const grad = ctx.createLinearGradient(x0, y0, x1, y1);
+            grad.addColorStop(0, colors.gradStart);
+            grad.addColorStop(1, colors.gradEnd);
+            return grad;
           },
           borderWidth: 0,
           borderRadius: 8,
           spacing: 6,
-          hoverOffset: 15
+          hoverOffset: 10
         }],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         cutout: '65%',
+        layout: {
+          padding: 16 // Give spacing inside the canvas so hovered slices do not get clipped
+        },
         animation: {
           duration: 1000,
           easing: 'easeOutQuart'
@@ -1054,23 +1107,29 @@
             display: false
           },
           tooltip: {
-            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            position: 'centerOfDoughnut',
+            xAlign: 'center',
+            yAlign: 'center',
+            titleAlign: 'center',
+            bodyAlign: 'center',
+            displayColors: false,
+            caretSize: 0,
+            backgroundColor: 'rgba(15, 23, 42, 0.92)',
             titleColor: '#ffffff',
-            bodyColor: '#ffffff',
+            bodyColor: '#e2e8f0',
             borderColor: 'rgba(255, 255, 255, 0.1)',
             borderWidth: 1,
             padding: 12,
             cornerRadius: 12,
-            boxPadding: 8,
-            usePointStyle: true,
             callbacks: {
+              title(tooltipItems) {
+                return tooltipItems[0].label;
+              },
               label(context) {
-                const label = context.label || 'Unknown';
                 const value = context.raw || 0;
-                // Show percentage alongside the amount
                 const total = context.dataset.data.reduce((a, b) => a + b, 0);
                 const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                return ` ${label}: ${formatRupiah(value)} (${pct}%)`;
+                return `${formatRupiah(value)} (${pct}%)`;
               },
             },
           },
