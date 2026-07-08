@@ -9,8 +9,31 @@
   // CONFIG
   // ===========================================================
 
-  /** Default categories always available in the select. */
-  const DEFAULT_CATEGORIES = ['Food', 'Transport', 'Fun'];
+  /** Default categories for Income transactions. */
+  const INCOME_CATEGORIES = [
+    'Salary',
+    'Freelance',
+    'Business',
+    'Investment',
+    'Bonus',
+    'Gift',
+    'Side Income',
+    'Rental',
+  ];
+
+  /** Default categories for Expense transactions. */
+  const EXPENSE_CATEGORIES = [
+    'Food & Drink',
+    'Transport',
+    'Shopping',
+    'Housing',
+    'Entertainment',
+    'Health',
+    'Education',
+    'Utilities',
+    'Subscription',
+    'Travel',
+  ];
 
   /**
    * Chart colour palette — 12 distinct colours that work on both
@@ -45,10 +68,11 @@
 
   /** LocalStorage keys — centralised so a typo can never cause a silent mismatch. */
   const STORAGE_KEYS = {
-    TRANSACTIONS : 'budgetvis_transactions',
-    CATEGORIES   : 'budgetvis_categories',
-    THEME        : 'budgetvis_theme',
-    SORT         : 'budgetvis_sort',
+    TRANSACTIONS: 'budgetvis_transactions',
+    CATEGORIES_INCOME: 'budgetvis_categories_income',
+    CATEGORIES_EXPENSE: 'budgetvis_categories_expense',
+    THEME: 'budgetvis_theme',
+    SORT: 'budgetvis_sort',
   };
 
   // ===========================================================
@@ -62,10 +86,20 @@
    * sort         : { field: string, dir: 'asc'|'desc' }
    */
   const state = {
-    transactions : [],
-    categories   : [],  // custom additions only; merged with DEFAULT_CATEGORIES at render time
-    sort         : { field: 'date', dir: 'desc' },
+    transactions: [],
+    categoriesIncome: [],  // custom income categories
+    categoriesExpense: [],  // custom expense categories
+    sort: { field: 'date', dir: 'desc' },
   };
+
+  /**
+   * Return the currently selected transaction type from the radio buttons.
+   * @returns {'income'|'expense'}
+   */
+  function getSelectedType() {
+    const checked = document.querySelector('input[name="transaction-type"]:checked');
+    return checked ? checked.value : 'income';
+  }
 
   /** @type {Chart|null} */
   let expenseChart = null;
@@ -114,8 +148,9 @@
    */
   function persistState() {
     storageSet(STORAGE_KEYS.TRANSACTIONS, state.transactions);
-    storageSet(STORAGE_KEYS.CATEGORIES,   state.categories);
-    storageSet(STORAGE_KEYS.SORT,         state.sort);
+    storageSet(STORAGE_KEYS.CATEGORIES_INCOME, state.categoriesIncome);
+    storageSet(STORAGE_KEYS.CATEGORIES_EXPENSE, state.categoriesExpense);
+    storageSet(STORAGE_KEYS.SORT, state.sort);
   }
 
   /**
@@ -125,19 +160,21 @@
    */
   function loadState() {
     const transactions = storageGet(STORAGE_KEYS.TRANSACTIONS, []);
-    const categories   = storageGet(STORAGE_KEYS.CATEGORIES,   []);
-    const sort         = storageGet(STORAGE_KEYS.SORT,         null);
+    const categoriesIncome = storageGet(STORAGE_KEYS.CATEGORIES_INCOME, []);
+    const categoriesExpense = storageGet(STORAGE_KEYS.CATEGORIES_EXPENSE, []);
+    const sort = storageGet(STORAGE_KEYS.SORT, null);
 
     state.transactions = Array.isArray(transactions) ? transactions : [];
-    state.categories   = Array.isArray(categories)   ? categories   : [];
+    state.categoriesIncome = Array.isArray(categoriesIncome) ? categoriesIncome : [];
+    state.categoriesExpense = Array.isArray(categoriesExpense) ? categoriesExpense : [];
 
     // Validate sort config — must have a known field and direction
     const validFields = ['date', 'amount', 'category'];
-    const validDirs   = ['asc', 'desc'];
+    const validDirs = ['asc', 'desc'];
     if (
       sort &&
       typeof sort.field === 'string' && validFields.includes(sort.field) &&
-      typeof sort.dir   === 'string' && validDirs.includes(sort.dir)
+      typeof sort.dir === 'string' && validDirs.includes(sort.dir)
     ) {
       state.sort = sort;
     }
@@ -155,9 +192,9 @@
    * @param {'light'|'dark'} theme
    */
   function applyTheme(theme) {
-    const root       = document.documentElement;
-    const toggleBtn  = document.querySelector('[data-action="toggle-theme"]');
-    const themeIcon  = toggleBtn && toggleBtn.querySelector('.theme-icon');
+    const root = document.documentElement;
+    const toggleBtn = document.querySelector('[data-action="toggle-theme"]');
+    const themeIcon = toggleBtn && toggleBtn.querySelector('.theme-icon');
 
     root.setAttribute('data-theme', theme);
 
@@ -168,7 +205,9 @@
         isDark ? 'Switch to light mode' : 'Switch to dark mode'
       );
       if (themeIcon) {
-        themeIcon.textContent = isDark ? '☀️' : '🌙';
+        themeIcon.innerHTML = isDark
+          ? '<i class="fa-solid fa-sun"></i>'
+          : '<i class="fa-solid fa-moon"></i>';
       }
     }
   }
@@ -179,7 +218,7 @@
    */
   function toggleTheme() {
     const current = document.documentElement.getAttribute('data-theme');
-    const next    = current === 'dark' ? 'light' : 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
     applyTheme(next);
     storageSet(STORAGE_KEYS.THEME, next);
   }
@@ -208,17 +247,17 @@
   // DOM REFERENCES
   // ===========================================================
 
-  const form         = document.getElementById('transaction-form');
-  const fieldDesc    = document.getElementById('transaction-description');
-  const fieldAmount  = document.getElementById('transaction-amount');
-  const fieldCat     = document.getElementById('transaction-category');
-  const errDesc      = document.getElementById('description-error');
-  const errAmount    = document.getElementById('amount-error');
-  const errCat       = document.getElementById('category-error');
+  const form = document.getElementById('transaction-form');
+  const fieldDesc = document.getElementById('transaction-description');
+  const fieldAmount = document.getElementById('transaction-amount');
+  const fieldCat = document.getElementById('transaction-category');
+  const errDesc = document.getElementById('description-error');
+  const errAmount = document.getElementById('amount-error');
+  const errCat = document.getElementById('category-error');
 
-  const customCatForm  = document.getElementById('custom-category-form');
+  const customCatForm = document.getElementById('custom-category-form');
   const customCatInput = document.getElementById('custom-category-input');
-  const customCatErr   = document.getElementById('custom-category-error');
+  const customCatErr = document.getElementById('custom-category-error');
 
   // ===========================================================
   // UTILITY — Toast notification
@@ -321,12 +360,21 @@
   }
 
   /**
+   * Parse the raw numeric value from the (possibly formatted) amount field.
+   * Strips dot thousand-separators before converting to integer.
+   * @returns {number}
+   */
+  function parseRawAmount() {
+    return parseInt(fieldAmount.value.replace(/\./g, '').trim(), 10);
+  }
+
+  /**
    * Validate the amount field.
-   * Rules: required, must be a number, must be > 0, no decimals allowed.
+   * Rules: required, must be a number, must be > 0, whole numbers only.
    * @returns {boolean}
    */
   function validateAmount() {
-    const raw   = fieldAmount.value.trim();
+    const raw = fieldAmount.value.replace(/\./g, '').trim();
     const value = Number(raw);
 
     if (raw === '') {
@@ -375,9 +423,9 @@
    * @returns {boolean}
    */
   function validateForm() {
-    const descOk   = validateDescription();
+    const descOk = validateDescription();
     const amountOk = validateAmount();
-    const catOk    = validateCategory();
+    const catOk = validateCategory();
     return descOk && amountOk && catOk;
   }
 
@@ -386,35 +434,43 @@
   // ===========================================================
 
   /**
-   * Return the full merged category list (defaults + custom).
+   * Return the full merged category list for a given type (defaults + custom).
+   * @param {'income'|'expense'} [type] - defaults to currently selected type
    * @returns {string[]}
    */
-  function getAllCategories() {
-    return [...DEFAULT_CATEGORIES, ...state.categories];
+  function getAllCategories(type) {
+    const t = type || getSelectedType();
+    if (t === 'income') {
+      return [...INCOME_CATEGORIES, ...state.categoriesIncome];
+    }
+    return [...EXPENSE_CATEGORIES, ...state.categoriesExpense];
   }
 
   /**
-   * Rebuild the <select> options from the current category list.
-   * Preserves the currently selected value if it still exists.
+   * Rebuild the <select> options based on the currently selected type.
+   * Resets the selection and re-renders the tag list.
    */
   function renderCategoryOptions() {
     const current = fieldCat.value;
+    const cats = getAllCategories();
 
     // Remove all dynamic options (keep the placeholder)
     while (fieldCat.options.length > 1) {
       fieldCat.remove(1);
     }
 
-    getAllCategories().forEach((cat) => {
+    cats.forEach((cat) => {
       const opt = document.createElement('option');
       opt.value = cat;
       opt.textContent = cat;
       fieldCat.appendChild(opt);
     });
 
-    // Restore selection if still valid
-    if (current && getAllCategories().includes(current)) {
+    // Restore selection only if still valid for current type
+    if (current && cats.includes(current)) {
       fieldCat.value = current;
+    } else {
+      fieldCat.value = '';
     }
 
     // Keep the tag list in sync whenever options rebuild
@@ -422,9 +478,8 @@
   }
 
   /**
-   * Render the visual tag list of custom categories below the form.
-   * Each tag gets a delete button that removes the category from state.
-   * Default categories are shown as static non-deletable chips.
+   * Render the visual tag list below the form.
+   * Shows default (non-deletable) and custom (deletable) chips for current type.
    */
   function renderCategoryTags() {
     const container = document.getElementById('category-tag-list');
@@ -432,14 +487,18 @@
 
     container.innerHTML = '';
 
-    // Default categories — shown as static, non-deletable chips
-    DEFAULT_CATEGORIES.forEach((cat, i) => {
-      container.appendChild(buildCategoryTag(cat, i, false));
+    const type = getSelectedType();
+    const defaults = type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+    const customs = type === 'income' ? state.categoriesIncome : state.categoriesExpense;
+
+    // Default categories — static, non-deletable chips
+    defaults.forEach((cat, i) => {
+      container.appendChild(buildCategoryTag(cat, i, false, type));
     });
 
     // Custom categories — deletable
-    state.categories.forEach((cat, i) => {
-      container.appendChild(buildCategoryTag(cat, DEFAULT_CATEGORIES.length + i, true));
+    customs.forEach((cat, i) => {
+      container.appendChild(buildCategoryTag(cat, defaults.length + i, true, type));
     });
   }
 
@@ -449,34 +508,38 @@
    * @param {string}  name       - category name
    * @param {number}  colorIndex - index into CHART_COLORS for the dot
    * @param {boolean} deletable  - whether to show a remove button
+   * @param {string}  type       - 'income' or 'expense' (for data attribute)
    * @returns {HTMLElement}
    */
-  function buildCategoryTag(name, colorIndex, deletable) {
+  function buildCategoryTag(name, colorIndex, deletable, type) {
     const tag = document.createElement('span');
     tag.className = 'category-tag' + (deletable ? ' category-tag--custom' : ' category-tag--default');
+    if (type === 'income') tag.classList.add('category-tag--income-type');
+    else tag.classList.add('category-tag--expense-type');
 
     // Colour dot using the same palette as the chart
     const dot = document.createElement('span');
-    dot.className           = 'category-tag__dot';
+    dot.className = 'category-tag__dot';
     dot.style.backgroundColor = getChartColor(colorIndex);
     dot.setAttribute('aria-hidden', 'true');
     tag.appendChild(dot);
 
     // Label
     const label = document.createElement('span');
-    label.className   = 'category-tag__label';
+    label.className = 'category-tag__label';
     label.textContent = name;
     tag.appendChild(label);
 
     // Delete button — only for custom categories
     if (deletable) {
       const btn = document.createElement('button');
-      btn.type              = 'button';
-      btn.className         = 'category-tag__remove';
+      btn.type = 'button';
+      btn.className = 'category-tag__remove';
       btn.setAttribute('aria-label', `Remove category: ${name}`);
-      btn.dataset.action    = 'delete-category';
-      btn.dataset.category  = name;
-      btn.textContent       = '×';
+      btn.dataset.action = 'delete-category';
+      btn.dataset.category = name;
+      btn.dataset.catType = type;
+      btn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
       tag.appendChild(btn);
     }
 
@@ -484,16 +547,15 @@
   }
 
   /**
-   * Delete a custom category by name.
-   * Transactions that used this category keep their data — only the
-   * category option is removed from the select and tag list.
-   *
+   * Delete a custom category by name and type.
    * @param {string} name
+   * @param {'income'|'expense'} type
    */
-  function deleteCategory(name) {
-    const idx = state.categories.indexOf(name);
+  function deleteCategory(name, type) {
+    const list = type === 'income' ? state.categoriesIncome : state.categoriesExpense;
+    const idx = list.indexOf(name);
     if (idx === -1) return;
-    state.categories.splice(idx, 1);
+    list.splice(idx, 1);
     persistState();
     renderCategoryOptions();   // rebuilds select + tag list
     renderExpenseChart();      // chart may need to drop this category's slice
@@ -501,15 +563,18 @@
   }
 
   /**
-   * Add a new custom category to state, persist, and refresh all
-   * dependent UI (select, tag list, chart).
-   *
+   * Add a new custom category for the current type.
    * @param {string} name - already trimmed
    */
   function addCategory(name) {
-    state.categories.push(name);
+    const type = getSelectedType();
+    if (type === 'income') {
+      state.categoriesIncome.push(name);
+    } else {
+      state.categoriesExpense.push(name);
+    }
     persistState();
-    renderCategoryOptions();   // rebuilds select + tag list via renderCategoryTags()
+    renderCategoryOptions();   // rebuilds select + tag list
     renderExpenseChart();      // palette expands — redraw chart
   }
 
@@ -535,12 +600,12 @@
     const type = document.querySelector('input[name="transaction-type"]:checked').value;
 
     return {
-      id          : `txn-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-      description : fieldDesc.value.trim(),
-      amount      : parseInt(fieldAmount.value.trim(), 10),
+      id: `txn-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      description: fieldDesc.value.trim(),
+      amount: parseRawAmount(),
       type,
-      category    : fieldCat.value,
-      date        : new Date().toISOString(),
+      category: fieldCat.value,
+      date: new Date().toISOString(),
     };
   }
 
@@ -585,7 +650,7 @@
    */
   function sortTransactions(transactions) {
     const { field, dir } = state.sort;
-    const multiplier     = dir === 'asc' ? 1 : -1;
+    const multiplier = dir === 'asc' ? 1 : -1;
 
     return [...transactions].sort((a, b) => {
       let cmp = 0;
@@ -613,9 +678,9 @@
    * Indexed by [field][dir].
    */
   const SORT_LABELS = {
-    date     : { desc: 'Newest', asc: 'Oldest'  },
-    amount   : { desc: 'Amount ↓', asc: 'Amount ↑' },
-    category : { desc: 'Category Z→A', asc: 'Category A→Z' },
+    date: { desc: 'Newest', asc: 'Oldest' },
+    amount: { desc: 'Amount ↓', asc: 'Amount ↑' },
+    category: { desc: 'Category Z→A', asc: 'Category A→Z' },
   };
 
   /**
@@ -628,7 +693,7 @@
     const buttons = document.querySelectorAll('[data-sort-field]');
 
     buttons.forEach((btn) => {
-      const field    = btn.dataset.sortField;
+      const field = btn.dataset.sortField;
       const isActive = field === state.sort.field;
 
       btn.setAttribute('aria-pressed', String(isActive));
@@ -636,7 +701,7 @@
 
       // Update text label — show current direction for active button,
       // default direction label for inactive buttons
-      const dir    = isActive ? state.sort.dir : btn.dataset.sortDir;
+      const dir = isActive ? state.sort.dir : btn.dataset.sortDir;
       const labels = SORT_LABELS[field];
       if (labels) {
         btn.textContent = labels[dir] || btn.textContent;
@@ -772,38 +837,56 @@
    */
   function formatDate(iso) {
     return new Date(iso).toLocaleString('en-GB', {
-      day   : 'numeric',
-      month : 'short',
-      year  : 'numeric',
-      hour  : '2-digit',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
       minute: '2-digit',
     });
   }
 
   /**
-   * Map a category name to a representative emoji icon.
+   * Map a category name to a Font Awesome icon HTML string.
    * @param {string} category
    * @returns {string}
    */
   function categoryIcon(category) {
     const icons = {
-      Food      : '🍔',
-      Transport : '🚗',
-      Fun       : '🎮',
+      // Income
+      'Salary': 'fa-solid fa-briefcase',
+      'Freelance': 'fa-solid fa-laptop-code',
+      'Business': 'fa-solid fa-building',
+      'Investment': 'fa-solid fa-chart-line',
+      'Bonus': 'fa-solid fa-gift',
+      'Gift': 'fa-solid fa-hand-holding-heart',
+      'Side Income': 'fa-solid fa-lightbulb',
+      'Rental': 'fa-solid fa-house',
+      // Expense
+      'Food & Drink': 'fa-solid fa-utensils',
+      'Transport': 'fa-solid fa-car',
+      'Shopping': 'fa-solid fa-bag-shopping',
+      'Housing': 'fa-solid fa-house-chimney',
+      'Entertainment': 'fa-solid fa-gamepad',
+      'Health': 'fa-solid fa-heart-pulse',
+      'Education': 'fa-solid fa-graduation-cap',
+      'Utilities': 'fa-solid fa-bolt',
+      'Subscription': 'fa-solid fa-credit-card',
+      'Travel': 'fa-solid fa-plane',
     };
-    return icons[category] || '🏷️';
+    const cls = icons[category] || 'fa-solid fa-tag';
+    return `<i class="${cls}"></i>`;
   }
 
   /** Update the three summary card amounts from a single computed snapshot. */
   function renderSummaryCards() {
     const { income, expenses, balance } = computeSummary();
 
-    const elBalance  = document.getElementById('total-balance');
-    const elIncome   = document.getElementById('total-income');
+    const elBalance = document.getElementById('total-balance');
+    const elIncome = document.getElementById('total-income');
     const elExpenses = document.getElementById('total-expenses');
 
-    elBalance.textContent  = formatCurrency(balance);
-    elIncome.textContent   = formatRupiah(income);
+    elBalance.textContent = formatCurrency(balance);
+    elIncome.textContent = formatRupiah(income);
     elExpenses.textContent = formatRupiah(expenses);
 
     // Visual cue: tint the balance card red when the user is in deficit
@@ -815,7 +898,7 @@
 
   /** Render or update the expense pie chart based on current data. */
   function renderExpenseChart() {
-    const canvas     = document.getElementById('expense-chart');
+    const canvas = document.getElementById('expense-chart');
     const emptyState = document.getElementById('chart-empty-state');
 
     if (!canvas || typeof Chart === 'undefined') {
@@ -829,7 +912,7 @@
     const { labels, values } = computeExpenseCategoryTotals();
     const hasData = values.length > 0;
 
-    canvas.hidden    = !hasData;
+    canvas.hidden = !hasData;
     emptyState.hidden = hasData;
 
     if (!hasData) {
@@ -850,10 +933,10 @@
 
     if (expenseChart) {
       // Update in-place — smoother than destroy + recreate
-      expenseChart.data.labels                           = labels;
-      expenseChart.data.datasets[0].data                = values;
-      expenseChart.data.datasets[0].backgroundColor     = backgroundColors;
-      expenseChart.data.datasets[0].borderColor         = borderColor;
+      expenseChart.data.labels = labels;
+      expenseChart.data.datasets[0].data = values;
+      expenseChart.data.datasets[0].backgroundColor = backgroundColors;
+      expenseChart.data.datasets[0].borderColor = borderColor;
       expenseChart.update();
       return;
     }
@@ -864,35 +947,35 @@
       data: {
         labels,
         datasets: [{
-          data            : values,
-          backgroundColor : backgroundColors,
-          borderColor     : borderColor,
-          borderWidth     : 2,
+          data: values,
+          backgroundColor: backgroundColors,
+          borderColor: borderColor,
+          borderWidth: 2,
         }],
       },
       options: {
-        responsive         : true,
+        responsive: true,
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position : 'bottom',
-            labels   : {
+            position: 'bottom',
+            labels: {
               // Use CSS variable for legend text so it adapts to dark mode
-              color    : getComputedStyle(document.documentElement)
-                           .getPropertyValue('--color-text-secondary').trim(),
-              padding  : 16,
-              boxWidth : 12,
-              font     : { size: 12 },
+              color: getComputedStyle(document.documentElement)
+                .getPropertyValue('--color-text-secondary').trim(),
+              padding: 16,
+              boxWidth: 12,
+              font: { size: 12 },
             },
           },
           tooltip: {
             callbacks: {
               label(context) {
                 const label = context.label || 'Unknown';
-                const value = context.raw   || 0;
+                const value = context.raw || 0;
                 // Show percentage alongside the amount
                 const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                const pct   = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
                 return ` ${label}: ${formatRupiah(value)} (${pct}%)`;
               },
             },
@@ -909,29 +992,29 @@
    */
   function createTransactionNode(txn) {
     const template = document.getElementById('transaction-item-template');
-    const node     = template.content.cloneNode(true);
-    const li       = node.querySelector('.transaction-item');
+    const node = template.content.cloneNode(true);
+    const li = node.querySelector('.transaction-item');
 
-    li.dataset.id   = txn.id;
+    li.dataset.id = txn.id;
     li.dataset.type = txn.type;
 
-    li.querySelector('.transaction-item__icon').textContent        = categoryIcon(txn.category);
+    li.querySelector('.transaction-item__icon').innerHTML = categoryIcon(txn.category);
     li.querySelector('.transaction-item__description').textContent = txn.description;
 
-    const timeEl       = li.querySelector('.transaction-item__date');
+    const timeEl = li.querySelector('.transaction-item__date');
     timeEl.textContent = formatDate(txn.date);
-    timeEl.dateTime    = txn.date;
+    timeEl.dateTime = txn.date;
 
     li.querySelector('.transaction-item__category-badge').textContent = txn.category;
 
-    const amountEl       = li.querySelector('.transaction-item__amount');
+    const amountEl = li.querySelector('.transaction-item__amount');
     amountEl.textContent = formatCurrency(
       txn.type === 'income' ? txn.amount : -txn.amount,
       'sign'
     );
 
     // Attach delete button data
-    const deleteBtn   = li.querySelector('[data-action="delete-transaction"]');
+    const deleteBtn = li.querySelector('[data-action="delete-transaction"]');
     deleteBtn.dataset.id = txn.id;
     deleteBtn.setAttribute('aria-label', `Delete transaction: ${txn.description}`);
 
@@ -940,7 +1023,7 @@
 
   /** Re-render the full transaction list from state. */
   function renderTransactionList() {
-    const list       = document.getElementById('transaction-list');
+    const list = document.getElementById('transaction-list');
     const emptyState = document.getElementById('list-empty-state');
 
     list.innerHTML = '';
@@ -975,9 +1058,9 @@
   /** Clear all form fields and validation states after successful submission. */
   function resetForm() {
     form.reset();
-    clearFieldState(fieldDesc,   errDesc);
+    clearFieldState(fieldDesc, errDesc);
     clearFieldState(fieldAmount, errAmount);
-    clearFieldState(fieldCat,    errCat);
+    clearFieldState(fieldCat, errCat);
     fieldDesc.focus();
   }
 
@@ -998,12 +1081,42 @@
       }
     });
 
-    // Amount
-    fieldAmount.addEventListener('blur', () => validateAmount(), { once: false });
+    // Amount — live formatting with dot thousand-separators
     fieldAmount.addEventListener('input', () => {
-      if (fieldAmount.classList.contains('is-invalid') || fieldAmount.classList.contains('is-valid')) {
+      const el = fieldAmount;
+      const raw = el.value.replace(/\./g, '').replace(/\D/g, ''); // digits only
+      const selStart = el.selectionStart;
+      const prevLen = el.value.length;
+
+      if (raw === '') {
+        el.value = '';
+      } else {
+        // Format: add dots every 3 digits from the right
+        el.value = Number(raw).toLocaleString('id-ID');
+      }
+
+      // Adjust caret: compensate for inserted/removed dot characters
+      const newLen = el.value.length;
+      const caretAdj = newLen - prevLen;
+      const newCaret = Math.max(0, selStart + caretAdj);
+      el.setSelectionRange(newCaret, newCaret);
+
+      // Run validation once field has been touched
+      if (el.classList.contains('is-invalid') || el.classList.contains('is-valid')) {
         validateAmount();
       }
+    });
+
+    fieldAmount.addEventListener('blur', () => validateAmount(), { once: false });
+
+    // Prevent non-numeric keys (allow: digits, Backspace, Delete, Tab, arrows, Home/End)
+    fieldAmount.addEventListener('keydown', (e) => {
+      const allowed = [
+        'Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End',
+      ];
+      if (allowed.includes(e.key)) return;
+      if (e.ctrlKey || e.metaKey) return; // allow Ctrl+A/C/V/X
+      if (!/^\d$/.test(e.key)) e.preventDefault();
     });
 
     // Category
@@ -1032,6 +1145,7 @@
     e.preventDefault();
 
     const name = customCatInput.value.trim();
+    const type = getSelectedType();
 
     // Validation
     if (name === '') {
@@ -1041,11 +1155,11 @@
       return;
     }
 
-    const exists = getAllCategories().some(
+    const exists = getAllCategories(type).some(
       (c) => c.toLowerCase() === name.toLowerCase()
     );
     if (exists) {
-      customCatErr.textContent = `"${name}" already exists.`;
+      customCatErr.textContent = `"${name}" already exists for ${type}.`;
       customCatInput.classList.add('is-invalid');
       customCatInput.focus();
       return;
@@ -1063,7 +1177,7 @@
     customCatInput.value = '';
     customCatInput.classList.remove('is-invalid', 'is-valid');
     customCatErr.textContent = '';
-    showToast(`Category "${name}" added.`);
+    showToast(`Category "${name}" added to ${type}.`);
   }
 
   /**
@@ -1074,7 +1188,8 @@
     const btn = e.target.closest('[data-action="delete-category"]');
     if (!btn) return;
     const name = btn.dataset.category;
-    if (name) deleteCategory(name);
+    const catType = btn.dataset.catType || getSelectedType();
+    if (name) deleteCategory(name, catType);
   }
 
   /**
@@ -1113,6 +1228,15 @@
     document.querySelector('[data-action="toggle-theme"]').addEventListener('click', toggleTheme);
     document.querySelector('.sort-controls').addEventListener('click', handleSortClick);
     bindLiveValidation();
+
+    // Re-render category dropdown when Income/Expense type changes
+    document.querySelectorAll('input[name="transaction-type"]').forEach((radio) => {
+      radio.addEventListener('change', () => {
+        renderCategoryOptions();
+        // Reset validation state on category field when type changes
+        clearFieldState(fieldCat, errCat);
+      });
+    });
   }
 
   // Kick off when DOM is ready
