@@ -937,7 +937,7 @@
     const h = Math.abs(hash) % 360;
     const s = 65 + (Math.abs(hash >> 1) % 15); // 65-80% saturation
     const l = 45 + (Math.abs(hash >> 2) % 10); // 45-55% lightness
-    
+
     return {
       base: `hsl(${h}, ${s}%, ${l}%)`,
       gradStart: `hsl(${h}, ${s}%, ${l + 10}%)`,
@@ -993,35 +993,35 @@
       const toggleBtn = document.createElement('button');
       toggleBtn.type = 'button';
       toggleBtn.className = 'btn btn--legend-toggle';
-      
+
       if (legendExpanded) {
         toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Show Less';
       } else {
         const remainingCount = items.length - limit;
         toggleBtn.innerHTML = `<i class="fa-solid fa-chevron-down"></i> Show More (+${remainingCount})`;
       }
-      
+
       toggleBtn.addEventListener('click', () => {
         legendExpanded = !legendExpanded;
         renderCustomLegend(labels, values);
       });
-      
+
       legendContainer.appendChild(toggleBtn);
     }
   }
 
   // Register custom tooltip positioner to follow the cursor with a dynamic left/right offset
   if (typeof Chart !== 'undefined' && Chart.Tooltip && Chart.Tooltip.positioners && !Chart.Tooltip.positioners.followOffset) {
-    Chart.Tooltip.positioners.followOffset = function(elements, eventPosition) {
+    Chart.Tooltip.positioners.followOffset = function (elements, eventPosition) {
       if (!eventPosition || !eventPosition.x || !eventPosition.y) return false;
       const chart = this.chart;
       const midX = chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2;
-      
+
       // If cursor is on the right side of the chart center, display tooltip to the left.
       // If cursor is on the left side of the chart center, display tooltip to the right.
       const shiftX = eventPosition.x > midX ? -150 : 25;
       const shiftY = -40; // Slightly above cursor to prevent overlapping
-      
+
       return {
         x: eventPosition.x + shiftX,
         y: eventPosition.y + shiftY
@@ -1075,9 +1075,9 @@
         labels,
         datasets: [{
           data: values,
-          backgroundColor: function(context) {
+          backgroundColor: function (context) {
             const chart = context.chart;
-            const {ctx, chartArea} = chart;
+            const { ctx, chartArea } = chart;
             const label = chart.data.labels[context.dataIndex];
             const colors = getCategoryColors(label);
             if (!chartArea) {
@@ -1117,6 +1117,8 @@
             position: 'followOffset',
             xAlign: 'left',
             yAlign: 'center',
+            titleAlign: 'center',
+            bodyAlign: 'center',
             displayColors: false,
             caretSize: 0,
             backgroundColor: 'rgba(15, 23, 42, 0.95)',
@@ -1133,8 +1135,11 @@
               label(context) {
                 const value = context.raw || 0;
                 const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                return `${formatRupiah(value)} (${pct}%)`;
+                const pct = total > 0 ? ((value / total) * 100).toFixed(0) : 0;
+                return [
+                  `${pct}%`,
+                  formatRupiah(value)
+                ];
               },
             },
           },
