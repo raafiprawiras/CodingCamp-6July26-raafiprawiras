@@ -1010,14 +1010,21 @@
     }
   }
 
-  // Register custom tooltip positioner to place it exactly in the center of the doughnut hole
-  if (typeof Chart !== 'undefined' && Chart.Tooltip && Chart.Tooltip.positioners && !Chart.Tooltip.positioners.centerOfDoughnut) {
-    Chart.Tooltip.positioners.centerOfDoughnut = function(elements) {
-      if (!elements || !elements.length) return false;
+  // Register custom tooltip positioner to follow the cursor with a dynamic left/right offset
+  if (typeof Chart !== 'undefined' && Chart.Tooltip && Chart.Tooltip.positioners && !Chart.Tooltip.positioners.followOffset) {
+    Chart.Tooltip.positioners.followOffset = function(elements, eventPosition) {
+      if (!eventPosition || !eventPosition.x || !eventPosition.y) return false;
       const chart = this.chart;
+      const midX = chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2;
+      
+      // If cursor is on the right side of the chart center, display tooltip to the left.
+      // If cursor is on the left side of the chart center, display tooltip to the right.
+      const shiftX = eventPosition.x > midX ? -150 : 25;
+      const shiftY = -40; // Slightly above cursor to prevent overlapping
+      
       return {
-        x: chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2,
-        y: chart.chartArea.top + (chart.chartArea.bottom - chart.chartArea.top) / 2
+        x: eventPosition.x + shiftX,
+        y: eventPosition.y + shiftY
       };
     };
   }
@@ -1107,14 +1114,12 @@
             display: false
           },
           tooltip: {
-            position: 'centerOfDoughnut',
-            xAlign: 'center',
+            position: 'followOffset',
+            xAlign: 'left',
             yAlign: 'center',
-            titleAlign: 'center',
-            bodyAlign: 'center',
             displayColors: false,
             caretSize: 0,
-            backgroundColor: 'rgba(15, 23, 42, 0.92)',
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
             titleColor: '#ffffff',
             bodyColor: '#e2e8f0',
             borderColor: 'rgba(255, 255, 255, 0.1)',
