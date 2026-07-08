@@ -57,9 +57,17 @@
         </span>
       </h1>
 
-      <button class="btn-theme-toggle" type="button" aria-label="Switch to dark mode" data-action="toggle-theme">
-        <span class="theme-icon" aria-hidden="true"><i class="fa-solid fa-moon"></i></span>
-      </button>
+      <div class="header-actions">
+        <div class="realtime-clock" id="realtime-clock" title="Waktu Indonesia Barat (WIB)">
+          <i class="fa-regular fa-clock clock-icon"></i>
+          <span id="clock-time">00:00:00</span>
+          <span class="clock-timezone">WIB</span>
+        </div>
+
+        <button class="btn-theme-toggle" type="button" aria-label="Switch to dark mode" data-action="toggle-theme">
+          <span class="theme-icon" aria-hidden="true"><i class="fa-solid fa-moon"></i></span>
+        </button>
+      </div>
     </div>
   </header>
 

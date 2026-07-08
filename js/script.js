@@ -1010,25 +1010,6 @@
     }
   }
 
-  // Register custom tooltip positioner to follow the cursor with a dynamic left/right offset
-  if (typeof Chart !== 'undefined' && Chart.Tooltip && Chart.Tooltip.positioners && !Chart.Tooltip.positioners.followOffset) {
-    Chart.Tooltip.positioners.followOffset = function (elements, eventPosition) {
-      if (!eventPosition || !eventPosition.x || !eventPosition.y) return false;
-      const chart = this.chart;
-      const midX = chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2;
-
-      // If cursor is on the right side of the chart center, display tooltip to the left.
-      // If cursor is on the left side of the chart center, display tooltip to the right.
-      const shiftX = eventPosition.x > midX ? -150 : 25;
-      const shiftY = -40; // Slightly above cursor to prevent overlapping
-
-      return {
-        x: eventPosition.x + shiftX,
-        y: eventPosition.y + shiftY
-      };
-    };
-  }
-
   /** Render or update the expense pie chart based on current data. */
   function renderExpenseChart() {
     const canvas = document.getElementById('expense-chart');
@@ -1041,6 +1022,25 @@
         emptyState.textContent = 'Chart could not be loaded.';
       }
       return;
+    }
+
+    // Register custom tooltip positioner to follow the cursor with a dynamic left/right offset
+    if (Chart.Tooltip && Chart.Tooltip.positioners && !Chart.Tooltip.positioners.followOffset) {
+      Chart.Tooltip.positioners.followOffset = function (elements, eventPosition) {
+        if (!eventPosition || !eventPosition.x || !eventPosition.y) return false;
+        const chart = this.chart;
+        const midX = chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2;
+
+        // If cursor is on the right side of the chart center, display tooltip to the left.
+        // If cursor is on the left side of the chart center, display tooltip to the right.
+        const shiftX = eventPosition.x > midX ? -150 : 25;
+        const shiftY = -40; // Slightly above cursor to prevent overlapping
+
+        return {
+          x: eventPosition.x + shiftX,
+          y: eventPosition.y + shiftY
+        };
+      };
     }
 
     const { labels, values } = computeExpenseCategoryTotals();
@@ -1368,11 +1368,46 @@
     if (id) deleteTransaction(id);
   }
 
+  /**
+   * Starts a real-time clock formatted in WIB timezone (UTC+7).
+   */
+  function startClock() {
+    const clockEl = document.getElementById('clock-time');
+    if (!clockEl) return;
+
+    function updateTime() {
+      const now = new Date();
+      const options = {
+        timeZone: 'Asia/Jakarta',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      };
+      
+      try {
+        clockEl.textContent = now.toLocaleTimeString('en-US', options);
+      } catch (err) {
+        // Fallback calculation for WIB (UTC+7)
+        const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const wib = new Date(utc + (3600000 * 7));
+        const pad = (num) => String(num).padStart(2, '0');
+        clockEl.textContent = `${pad(wib.getHours())}:${pad(wib.getMinutes())}:${pad(wib.getSeconds())}`;
+      }
+    }
+
+    updateTime();
+    setInterval(updateTime, 1000);
+  }
+
   // ===========================================================
   // INIT
   // ===========================================================
 
   function init() {
+    // Start real-time WIB clock
+    startClock();
+
     // Apply saved theme before first render — prevents flash of wrong theme
     loadTheme();
 
