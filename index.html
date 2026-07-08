@@ -50,9 +50,23 @@
   <header class="app-header">
     <div class="header-inner">
       <h1 class="app-title">
-        <span class="app-title__icon-wrap" aria-hidden="true"><i class="fa-solid fa-wallet"></i></span>
+        <span class="app-logo-wrap" aria-hidden="true">
+          <svg class="app-logo-svg" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="logoGrad" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#7c6df2" />
+                <stop offset="100%" stop-color="#a78bfa" />
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="36" height="36" rx="10" fill="url(#logoGrad)" />
+            <path d="M10 21H26C27.1 21 28 21.9 28 23V25C28 26.1 27.1 27 26 27H10C8.9 27 8 26.1 8 25V23C8 21.9 8.9 21 10 21Z" fill="#ffffff" />
+            <rect x="11" y="9" width="3" height="9" rx="1.5" fill="#ffffff" opacity="0.6" />
+            <rect x="16.5" y="12" width="3" height="6" rx="1.5" fill="#ffffff" opacity="0.8" />
+            <rect x="22" y="7" width="3" height="11" rx="1.5" fill="#ffffff" />
+          </svg>
+        </span>
         <span class="app-title__text">
-          <span class="app-title__name">Budget Visualizer</span>
+          <span class="app-title__name">Budget<span class="app-title__highlight">Visualizer</span></span>
           <span class="app-title__sub">Expense Tracker</span>
         </span>
       </h1>
