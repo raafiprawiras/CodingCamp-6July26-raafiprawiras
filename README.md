@@ -1,92 +1,86 @@
-# Expense & Budget Visualizer
+# Budget Visualizer — Expense Tracker
 
-A mobile-first expense tracker and budget visualizer built with pure HTML, CSS, and Vanilla JavaScript — no frameworks, no backend, no build tools.
+Aplikasi pemantau keuangan (*expense tracker* & *budget visualizer*) modern berbasis *mobile-first* yang dibangun menggunakan HTML, CSS, dan Vanilla JavaScript murni — tanpa framework, tanpa backend, dan tanpa build tools.
 
-**Live Demo:** https://raafiprawiras.github.io/CodingCamp-6July26-raafiprawiras/
-
----
-
-## Features
-
-- **Add Transactions** — Record income or expenses with a name, amount, and category
-- **Delete Transactions** — Remove any entry instantly
-- **Total Balance** — Real-time balance, income, and expense summary cards
-- **Pie Chart** — Expense breakdown by category, powered by Chart.js
-- **Custom Categories** — Create and delete your own categories beyond the defaults
-- **Sort Transactions** — Sort by newest, oldest, amount, or category
-- **Dark Mode** — Toggle and persists your preference across sessions
-- **LocalStorage Persistence** — All data survives page refreshes
+**Demo Live:** [https://raafiprawiras.github.io/CodingCamp-6July26-raafiprawiras/](https://raafiprawiras.github.io/CodingCamp-6July26-raafiprawiras/)
 
 ---
 
-## Project Structure
+## 🌟 Fitur Utama
+
+- **Catat Transaksi Dinamis** — Catat transaksi Pemasukan (*Income*) dan Pengeluaran (*Expense*) dengan nama item, nominal uang, dan kategori.
+- **Input Rupiah Real-time** — Kolom nominal secara otomatis memformat input angka menjadi format ribuan Rupiah dengan pemisah titik (misal: `1.500.000`) saat pengguna mengetik untuk menghindari kesalahan penulisan.
+- **Kartu Ringkasan Finansial Premium** — Kartu sisa saldo (*Total Balance*), total pemasukan (*Total Income*), dan total pengeluaran (*Total Expenses*) yang dirancang dengan efek gradasi dan bayangan (*shadow glow*) premium.
+- **Doughnut Chart Interaktif** — Visualisasi proporsi pengeluaran per kategori menggunakan Chart.js dengan potongan cincin modern (`cutout: '65%'`), segmentasi membulat, dan efek gradient dinamis.
+- **Legenda Kustom yang Dapat Diekspansi** — Legenda chart menampilkan persentase serta jumlah nominal Rupiah. Jika kategori melebihi 4, sistem akan menampilkan tombol *Show More/Show Less* agar tampilan tetap rapi.
+- **Sistem Kategori Terpisah & Dinamis** — Dropdown pilihan kategori berubah secara otomatis tergantung tipe transaksi yang dipilih (Income vs Expense). Custom category juga disimpan secara terpisah untuk masing-masing tipe.
+- **Ikon Font Awesome Elegan** — Menggantikan emoji standar dengan pustaka ikon profesional **Font Awesome 6** yang digunakan pada aplikasi kelas expert.
+- **Tema Gelap Ultra Deep** — Mendukung Dark Mode dengan warna latar belakang gelap pekat yang nyaman di mata, lengkap dengan mikro-animasi halus.
+- **Penyimpanan Lokal (LocalStorage)** — Semua data transaksi, kategori kustom, pengurutan, dan preferensi tema tetap tersimpan aman walaupun halaman direfresh atau tab ditutup.
+
+---
+
+## 📂 Struktur Proyek
 
 ```
 CodingCamp-6July26-raafiprawiras/
-├── index.html        # App shell — semantic HTML, ARIA, template element
+├── index.html        # App shell — Struktur HTML semantik, aksesibilitas ARIA, & template transaksi
 ├── css/
-│   └── style.css     # All styles — CSS variables, mobile-first, dark mode
+│   └── style.css     # Desain UI — Variabel CSS, tema gelap ultra deep, transisi & mikro-animasi
 ├── js/
-│   └── script.js     # All logic — state, storage, rendering, validation
-└── assets/           # Reserved for future static assets (icons, images)
+│   └── script.js     # Logika aplikasi — State management, integrasi Chart.js, format rupiah, & LocalStorage
+└── assets/           # Cadangan berkas statis di masa mendatang
 ```
 
-Single `index.html`, one `style.css`, one `script.js`. No bundler, no preprocessor, no dependencies other than Chart.js via CDN.
+Aplikasi ini menggunakan satu file HTML murni, satu file CSS, dan satu file JS. Tidak memerlukan bundler atau preprocessor tambahan.
 
 ---
 
-## Tech Stack
+## 🛠️ Spesifikasi Teknologi
 
-| Concern       | Solution                                      |
-|---------------|-----------------------------------------------|
-| Markup        | Semantic HTML5                                |
-| Styling       | CSS custom properties, Flexbox, CSS Grid      |
-| Logic         | Vanilla JavaScript (ES6+), IIFE module        |
-| Charts        | [Chart.js 4.4.0](https://www.chartjs.org/) via jsDelivr CDN |
-| Persistence   | `localStorage` API                            |
-| Deployment    | GitHub Pages (static hosting)                 |
+| Bagian | Teknologi / Library |
+|---|---|
+| **Markup** | HTML5 Semantik |
+| **Gaya / UI** | CSS Custom Properties, Flexbox, CSS Grid, Efek Glassmorphism |
+| **Logika Utama** | Vanilla JavaScript (ES6+), IIFE Module Pattern |
+| **Visualisasi Data** | [Chart.js 4.4.0](https://www.chartjs.org/) via CDN jsDelivr |
+| **Ikonografi** | [Font Awesome 6.5.1](https://fontawesome.com/) via CDN cdnjs |
+| **Penyimpanan** | `localStorage` API Web Native |
+| **Hosting / Deploy** | GitHub Pages (Static Hosting) |
 
 ---
 
-## Running Locally
+## 🚀 Cara Menjalankan secara Lokal
 
-No installation or build step required. Open `index.html` directly in any modern browser:
+Proyek ini tidak memerlukan proses instalasi atau build. Cukup buka file `index.html` menggunakan browser modern pilihan Anda:
 
 ```bash
-# Option 1 — file system (works for all features except localStorage on some browsers)
+# Opsi 1 — Membuka langsung via sistem file
 open index.html
 
-# Option 2 — local server (recommended, guarantees localStorage works)
+# Opsi 2 — Menggunakan local server (Sangat direkomendasikan agar LocalStorage berjalan lancar)
 npx serve .
-# or
+# atau
 python -m http.server 8080
 ```
 
-Then visit `http://localhost:8080`.
+Setelah server lokal berjalan, buka alamat `http://localhost:8080` pada browser Anda.
 
 ---
 
-## Deployment (GitHub Pages)
+## 🌐 Proses Deployment (GitHub Pages)
 
-This project is deployed via **GitHub Pages** from the `main` branch root.
+Proyek ini di-deploy langsung melalui **GitHub Pages** menggunakan *root* dari branch `main`.
 
-To deploy your own fork:
-
-1. Push to a GitHub repository
-2. Go to **Settings → Pages**
-3. Set **Source** to `Deploy from a branch`
-4. Select **Branch:** `main`, **Folder:** `/ (root)`
-5. Save — GitHub will publish at `https://<username>.github.io/<repo-name>/`
-
----
-
-## Browser Support
-
-Supports all modern browsers (Chrome 90+, Firefox 90+, Safari 15+, Edge 90+).  
-Requires JavaScript enabled. LocalStorage must be available (standard in all modern browsers).
+Untuk melakukan deployment pada fork Anda sendiri:
+1. Hubungkan kode lokal Anda ke repositori GitHub.
+2. Masuk ke halaman repositori di GitHub, lalu klik **Settings → Pages**.
+3. Atur bagian **Source** menjadi `Deploy from a branch`.
+4. Pilih **Branch:** `main` dan **Folder:** `/ (root)`.
+5. Klik **Save** — GitHub akan otomatis membangun halaman di `https://<username>.github.io/<repo-name>/`.
 
 ---
 
-## Coding Camp 2026
+## 👤 Pembuat
 
-Built as a project submission for **Coding Camp — July 2026** by **Raafi Prawiras**.
+Dibuat sebagai tugas pengumpulan proyek untuk **Coding Camp** oleh **Raafi Prawiras** (Presented by Raafi PS).
