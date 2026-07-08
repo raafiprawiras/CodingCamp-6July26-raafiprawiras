@@ -176,10 +176,18 @@
 
       <!-- PIE CHART -->
       <section class="chart-section" aria-labelledby="chart-heading">
-        <h2 class="section-title" id="chart-heading">Expenses by Category</h2>
+        <div class="chart-header">
+          <h2 class="section-title" id="chart-heading">Expense Distribution</h2>
+          <p class="section-subtitle">Track where your money goes</p>
+        </div>
 
-        <div class="chart-wrapper" role="img" aria-labelledby="chart-heading" aria-describedby="chart-empty-state">
-          <canvas id="expense-chart" aria-hidden="true"></canvas>
+        <div class="chart-container-layout">
+          <div class="chart-wrapper" role="img" aria-labelledby="chart-heading" aria-describedby="chart-empty-state">
+            <canvas id="expense-chart" aria-hidden="true"></canvas>
+          </div>
+          
+          <!-- Custom Legend -->
+          <div id="chart-legend-container" class="chart-legend-container"></div>
         </div>
 
         <p class="chart-empty-state" id="chart-empty-state" aria-live="polite">
