@@ -5,8 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Track your income and expenses with visual charts and budget summaries." />
-  <meta name="theme-color" content="#6c63ff" />
-  <title>Expense &amp; Budget Visualizer</title>
+  <meta name="theme-color" content="#7c6df2" />
+  <title>Budget Visualizer — Expense Tracker</title>
 
   <!--
     Inline theme script — runs synchronously before any paint.
@@ -16,7 +16,7 @@
   <script>
     (function () {
       var saved = null;
-      try { saved = localStorage.getItem('budgetvis_theme'); } catch (e) {}
+      try { saved = localStorage.getItem('budgetvis_theme'); } catch (e) { }
       var theme = (saved === 'dark' || saved === 'light')
         ? saved
         : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -28,7 +28,10 @@
     })();
   </script>
 
-  <!-- Chart.js — loaded with defer so it doesn't block HTML parsing -->
+  <!-- Font Awesome 6 — professional icon library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
 
   <link rel="stylesheet" href="css/style.css" />
@@ -37,7 +40,7 @@
 <body>
 
   <!-- ============================================================
-    SKIP LINK — keyboard and screen-reader users jump past header
+    SKIP LINK
   ============================================================ -->
   <a class="skip-link" href="#main-content">Skip to main content</a>
 
@@ -47,17 +50,15 @@
   <header class="app-header">
     <div class="header-inner">
       <h1 class="app-title">
-        <span class="app-title__icon" aria-hidden="true">💰</span>
-        Budget Visualizer
+        <span class="app-title__icon-wrap" aria-hidden="true"><i class="fa-solid fa-wallet"></i></span>
+        <span class="app-title__text">
+          <span class="app-title__name">Budget Visualizer</span>
+          <span class="app-title__sub">Expense Tracker</span>
+        </span>
       </h1>
 
-      <button
-        class="btn-theme-toggle"
-        type="button"
-        aria-label="Switch to dark mode"
-        data-action="toggle-theme"
-      >
-        <span class="theme-icon" aria-hidden="true">🌙</span>
+      <button class="btn-theme-toggle" type="button" aria-label="Switch to dark mode" data-action="toggle-theme">
+        <span class="theme-icon" aria-hidden="true"><i class="fa-solid fa-moon"></i></span>
       </button>
     </div>
   </header>
@@ -109,22 +110,11 @@
             <legend class="form-label">Type</legend>
             <div class="type-toggle">
               <label class="type-toggle__option">
-                <input
-                  type="radio"
-                  name="transaction-type"
-                  value="income"
-                  id="type-income"
-                  checked
-                />
+                <input type="radio" name="transaction-type" value="income" id="type-income" checked />
                 <span class="type-toggle__label">Income</span>
               </label>
               <label class="type-toggle__option">
-                <input
-                  type="radio"
-                  name="transaction-type"
-                  value="expense"
-                  id="type-expense"
-                />
+                <input type="radio" name="transaction-type" value="expense" id="type-expense" />
                 <span class="type-toggle__label">Expense</span>
               </label>
             </div>
@@ -133,51 +123,25 @@
           <!-- Description -->
           <div class="form-group">
             <label class="form-label" for="transaction-description">Item Name</label>
-            <input
-              class="form-input"
-              type="text"
-              id="transaction-description"
-              name="description"
-              placeholder="e.g. Monthly salary, Grocery run"
-              maxlength="100"
-              required
-              autocomplete="off"
-              aria-required="true"
-              aria-describedby="description-error"
-            />
+            <input class="form-input" type="text" id="transaction-description" name="description"
+              placeholder="e.g. Monthly salary, Grocery run" maxlength="100" required autocomplete="off"
+              aria-required="true" aria-describedby="description-error" />
             <span class="form-error" id="description-error" aria-live="assertive" aria-atomic="true"></span>
           </div>
 
           <!-- Amount -->
           <div class="form-group">
             <label class="form-label" for="transaction-amount">Amount (Rp)</label>
-            <input
-              class="form-input"
-              type="number"
-              id="transaction-amount"
-              name="amount"
-              placeholder="e.g. 500000"
-              min="1"
-              step="1"
-              inputmode="numeric"
-              required
-              aria-required="true"
-              aria-describedby="amount-error"
-            />
+            <input class="form-input" type="text" id="transaction-amount" name="amount" placeholder="e.g. 500.000"
+              inputmode="numeric" autocomplete="off" required aria-required="true" aria-describedby="amount-error" />
             <span class="form-error" id="amount-error" aria-live="assertive" aria-atomic="true"></span>
           </div>
 
           <!-- Category -->
           <div class="form-group">
             <label class="form-label" for="transaction-category">Category</label>
-            <select
-              class="form-select"
-              id="transaction-category"
-              name="category"
-              required
-              aria-required="true"
-              aria-describedby="category-error"
-            >
+            <select class="form-select" id="transaction-category" name="category" required aria-required="true"
+              aria-describedby="category-error">
               <option value="" disabled selected>Select a category</option>
               <!-- Options populated by JavaScript -->
             </select>
@@ -192,32 +156,20 @@
 
         <!-- MANAGE CATEGORIES -->
         <div class="custom-category" aria-labelledby="custom-category-heading">
-          <h3 class="custom-category__title" id="custom-category-heading">Categories</h3>
+          <h3 class="custom-category__title" id="custom-category-heading">Manage Categories</h3>
 
           <form id="custom-category-form" novalidate>
             <div class="custom-category__form">
               <label class="sr-only" for="custom-category-input">New category name</label>
-              <input
-                class="form-input"
-                type="text"
-                id="custom-category-input"
-                name="custom-category"
-                placeholder="New category name…"
-                maxlength="30"
-                autocomplete="off"
-                aria-describedby="custom-category-error"
-              />
+              <input class="form-input" type="text" id="custom-category-input" name="custom-category"
+                placeholder="New category name…" maxlength="30" autocomplete="off"
+                aria-describedby="custom-category-error" />
               <button class="btn btn--secondary" type="submit">Add</button>
             </div>
             <span class="form-error" id="custom-category-error" aria-live="assertive" aria-atomic="true"></span>
           </form>
 
-          <ul
-            class="category-tag-list"
-            id="category-tag-list"
-            aria-label="Manage categories"
-            aria-live="polite"
-          ></ul>
+          <ul class="category-tag-list" id="category-tag-list" aria-label="Manage categories" aria-live="polite"></ul>
         </div>
 
       </section>
@@ -248,39 +200,19 @@
         <div class="sort-controls" role="group" aria-label="Sort transactions by">
           <span class="sort-controls__label" aria-hidden="true">Sort:</span>
 
-          <button
-            class="btn btn--sort"
-            type="button"
-            data-sort-field="date"
-            data-sort-dir="asc"
-            aria-pressed="false"
-          >Newest</button>
+          <button class="btn btn--sort" type="button" data-sort-field="date" data-sort-dir="asc"
+            aria-pressed="false">Newest</button>
 
-          <button
-            class="btn btn--sort"
-            type="button"
-            data-sort-field="amount"
-            data-sort-dir="asc"
-            aria-pressed="false"
-          >Amount ↓</button>
+          <button class="btn btn--sort" type="button" data-sort-field="amount" data-sort-dir="asc"
+            aria-pressed="false">Amount ↓</button>
 
-          <button
-            class="btn btn--sort"
-            type="button"
-            data-sort-field="category"
-            data-sort-dir="desc"
-            aria-pressed="false"
-          >Category A→Z</button>
+          <button class="btn btn--sort" type="button" data-sort-field="category" data-sort-dir="desc"
+            aria-pressed="false">Category A→Z</button>
         </div>
       </div>
 
-      <ul
-        class="transaction-list"
-        id="transaction-list"
-        aria-label="Transaction history"
-        aria-live="polite"
-        aria-relevant="additions removals"
-      ></ul>
+      <ul class="transaction-list" id="transaction-list" aria-label="Transaction history" aria-live="polite"
+        aria-relevant="additions removals"></ul>
 
       <p class="list-empty-state" id="list-empty-state">
         No transactions yet. Add your first one above.
@@ -294,11 +226,11 @@
     FOOTER
   ============================================================ -->
   <footer class="app-footer">
-    <p class="app-footer__text">Expense &amp; Budget Visualizer &mdash; Coding Camp 2026</p>
+    <p class="app-footer__text">Expense &amp; Budget Visualizer &mdash; Presented by Raafi PS</p>
   </footer>
 
   <!-- ============================================================
-    TRANSACTION ITEM TEMPLATE — cloned by JS, never rendered directly
+    TRANSACTION ITEM TEMPLATE 
   ============================================================ -->
   <template id="transaction-item-template">
     <li class="transaction-item">
@@ -311,15 +243,12 @@
         <span class="transaction-item__category-badge"></span>
         <span class="transaction-item__amount"></span>
       </div>
-      <button
-        class="btn btn--delete"
-        type="button"
-        data-action="delete-transaction"
-      >&times;</button>
+      <button class="btn btn--delete" type="button" data-action="delete-transaction"><i class="fa-regular fa-trash-can"></i></button>
     </li>
   </template>
 
   <script src="js/script.js"></script>
 
 </body>
+
 </html>
