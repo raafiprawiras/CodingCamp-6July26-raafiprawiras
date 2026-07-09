@@ -1,0 +1,51 @@
+/* =============================================================
+   style.css — Expense & Budget Visualizer
+   Mobile-first · CSS Variables · Light & Dark themes
+   ============================================================= */
+
+/* -------------------------------------------------------------
+   1. CSS CUSTOM PROPERTIES (Design Tokens)
+   ------------------------------------------------------------- */
+:root {
+  /* Brand */
+  --color-primary:        #6c63ff;
+  --color-primary-hover:  #574fd6;
+  --color-primary-light:  #ede9ff;
+
+  /* Semantic */
+  --color-income:         #22c55e;
+  --color-income-light:   #dcfce7;
+  --color-expense:        #ef4444;
+  --color-expense-light:  #fee2e2;
+  --color-balance:        #6c63ff;
+  --color-balance-light:  #ede9ff;
+
+  /* Neutrals — Light theme */
+  --color-bg:             #f5f5f7;
+  --color-surface:        #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-border:         #e5e7eb;
+  --color-text-primary:   #111827;
+  --color-text-secondary: #6b7280;
+  --color-text-muted:     #9ca3af;
+  --color-placeholder:    #d1d5db;
+
+  /* Danger */
+  --color-danger:         #ef4444;
+  --color-danger-hover:   #dc2626;
+
+  /* Typography */
+  --font-family:          'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-size-xs:         0.75rem;
+  --font-size-sm:         0.875rem;
+  --font-size-base:       1rem;
+  --font-size-lg:         1.125rem;
+  --font-size-xl:         1.25rem;
+  --font-size-2xl:        1.5rem;
+  --font-size-3xl:        1.875rem;
+  --font-weight-normal:   400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+  --line-height-tight:    1.25;
+  --line-height-normal:   1.5;

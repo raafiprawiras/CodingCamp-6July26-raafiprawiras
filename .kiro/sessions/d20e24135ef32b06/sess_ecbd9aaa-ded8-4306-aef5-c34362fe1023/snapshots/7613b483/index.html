@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Track your income and expenses with visual charts and budget summaries." />
+  <title>Expense &amp; Budget Visualizer</title>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+
+  <!-- Suppress CSS transitions on first paint to prevent theme flash.
+       This inline script runs before the stylesheet is applied. -->
+  <script>
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem('budgetvis_theme'); } catch (e) {}
+      var theme = (saved === 'dark' || saved === 'light')
+        ? saved
+        : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.classList.add('no-transition');
+      window.addEventListener('load', function () {
+        document.documentElement.classList.remove('no-transition');
+      });
+    })();
+  </script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+  <!-- ============================================================
+    HEADER
+  ============================================================ -->
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <h1 class="app-title">
+        <span class="app-title__icon" aria-hidden="true">💰</span>
+        Budget Visualizer
+      </h1>
+
+      <button
+        class="btn-theme-toggle"
+        type="button"
+        aria-label="Switch to dark mode"
+        data-action="toggle-theme"
+      >
+        <span class="theme-icon" aria-hidden="true">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================================
+    MAIN CONTENT
+  ============================================================ -->
+  <main class="app-main" id="main-content">
+
+    <!-- ----------------------------------------------------------
+      SUMMARY CARDS SECTION
+    ---------------------------------------------------------- -->
+    <section class="summary-section" aria-labelledby="summary-heading">
+      <h2 class="sr-only" id="summary-heading">Financial Summary</h2>
+
+      <div class="summary-cards">
+
+        <article class="summary-card summary-card--balance" aria-label="Total Balance">
+          <h3 class="summary-card__label">Total Balance</h3>
+          <p class="summary-card__amount" id="total-balance" aria-live="polite">Rp 0</p>
+        </article>
+
+        <article class="summary-card summary-card--income" aria-label="Total Income">
+          <h3 class="summary-card__label">Total Income</h3>
+          <p class="summary-card__amount" id="total-income" aria-live="polite">Rp 0</p>
+        </article>
+
+        <article class="summary-card summary-card--expense" aria-label="Total Expenses">
+          <h3 class="summary-card__label">Total Expenses</h3>
+          <p class="summary-card__amount" id="total-expenses" aria-live="polite">Rp 0</p>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------
+      FORM + CHART SECTION (two-column on desktop)
+    ---------------------------------------------------------- -->
+    <div class="content-grid">
+
+      <!-- ADD TRANSACTION FORM -->
+      <section class="form-section" aria-labelledby="form-heading">
+        <h2 class="section-title" id="form-heading">Add Transaction</h2>
+
+        <form class="transaction-form" id="transaction-form" novalidate>
+
+          <!-- Transaction Type Toggle -->
+          <fieldset class="form-group form-group--type">
+            <legend class="form-label">Type</legend>
+            <div class="type-toggle" role="group" aria-label="Transaction type">
+              <label class="type-toggle__option">
+                <input
+                  type="radio"
+                  name="transaction-type"
+                  value="income"
+                  id="type-income"
+                  checked
+                />
+                <span class="type-toggle__label">Income</span>
+              </label>
+              <label class="type-toggle__option">
+                <input
+                  type="radio"
+                  name="transaction-type"
+                  value="expense"
+                  id="type-expense"
+                />
+                <span class="type-toggle__label">Expense</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label class="form-label" for="transaction-description">Description</label>
+            <input
+              class="form-input"
+              type="text"
+              id="transaction-description"
+              name="description"
+              placeholder="e.g. Monthly salary, Grocery run"
+              maxlength="100"
+              required
+              aria-required="true"
+              aria-describedby="description-error"
+            />
+            <span class="form-error" id="description-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Amount -->
+          <div class="form-group">
+            <label class="form-label" for="transaction-amount">Amount (Rp)</label>
+            <input
+              class="form-input"
+              type="number"
+              id="transaction-amount"
+              name="amount"
+              placeholder="e.g. 500000"
+              min="1"
+              step="1"
+              required
+              aria-required="true"
+              aria-describedby="amount-error"
+            />
+            <span class="form-error" id="amount-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Category -->
+          <div class="form-group">
+            <label class="form-label" for="transaction-category">Category</label>
+            <select
+              class="form-select"
+              id="transaction-category"
+              name="category"
+              required
+              aria-required="true"
+              aria-describedby="category-error"
+            >
+              <option value="" disabled selected>Select a category</option>
+              <!-- Populated by JavaScript -->
+            </select>
+            <span class="form-error" id="category-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Submit -->
+          <button class="btn btn--primary" type="submit" id="btn-add-transaction">
+            Add Transaction
+          </button>
+
+        </form>
+
+        <!-- ADD CUSTOM CATEGORY -->
+        <div class="custom-category" aria-labelledby="custom-category-heading">
+          <h3 class="custom-category__title" id="custom-category-heading">Add Custom Category</h3>
+          <form class="custom-category__form" id="custom-category-form" novalidate>
+            <input
+              class="form-input"
+              type="text"
+              id="custom-category-input"
+              name="custom-category"
+              placeholder="e.g. Fitness, Hobbies"
+              maxlength="30"
+              aria-label="New category name"
+              aria-describedby="custom-category-error"
+            />
+            <button class="btn btn--secondary" type="submit">Add</button>
+            <span class="form-error" id="custom-category-error" role="alert" aria-live="polite"></span>
+          </form>
+        </div>
+
+      </section>
+
+      <!-- PIE CHART -->
+      <section class="chart-section" aria-labelledby="chart-heading">
+        <h2 class="section-title" id="chart-heading">Expenses by Category</h2>
+
+        <div class="chart-wrapper">
+          <canvas
+            id="expense-chart"
+            role="img"
+            aria-label="Doughnut chart showing expense distribution by category"
+          ></canvas>
+        </div>
+
+        <!-- Empty state — shown when no expense data -->
+        <p class="chart-empty-state" id="chart-empty-state" aria-live="polite">
+          No expense data yet. Add a transaction to see the chart.
+        </p>
+
+      </section>
+
+    </div><!-- /.content-grid -->
+
+    <!-- ----------------------------------------------------------
+      TRANSACTION LIST SECTION
+    ---------------------------------------------------------- -->
+    <section class="list-section" aria-labelledby="list-heading">
+      <div class="list-header">
+        <h2 class="section-title" id="list-heading">Transactions</h2>
+
+        <!-- Sort Controls -->
+        <div class="sort-controls" role="group" aria-label="Sort transactions">
+          <span class="sort-controls__label">Sort by:</span>
+
+          <button
+            class="btn btn--sort btn--sort-active"
+            type="button"
+            data-sort-field="date"
+            data-sort-dir="desc"
+            aria-pressed="true"
+            aria-label="Sort by date descending"
+          >
+            Date
+          </button>
+
+          <button
+            class="btn btn--sort"
+            type="button"
+            data-sort-field="amount"
+            data-sort-dir="desc"
+            aria-pressed="false"
+            aria-label="Sort by amount"
+          >
+            Amount
+          </button>
+
+          <button
+            class="btn btn--sort"
+            type="button"
+            data-sort-field="category"
+            data-sort-dir="asc"
+            aria-pressed="false"
+            aria-label="Sort by category"
+          >
+            Category
+          </button>
+        </div>
+      </div>
+
+      <!-- Transaction List -->
+      <ul
+        class="transaction-list"
+        id="transaction-list"
+        role="list"
+        aria-label="Transaction list"
+        aria-live="polite"
+      >
+        <!-- Populated by JavaScript -->
+      </ul>
+
+      <!-- Empty state — shown when no transactions -->
+      <p class="list-empty-state" id="list-empty-state">
+        No transactions yet. Add your first one above.
+      </p>
+
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+    FOOTER
+  ============================================================ -->
+  <footer class="app-footer" role="contentinfo">
+    <p class="app-footer__text">
+      Expense &amp; Budget Visualizer &mdash; Coding Camp 2026
+    </p>
+  </footer>
+
+  <!-- ============================================================
+    TRANSACTION ITEM TEMPLATE
+    (cloned by JavaScript — not rendered directly)
+  ============================================================ -->
+  <template id="transaction-item-template">
+    <li class="transaction-item" role="listitem">
+      <div class="transaction-item__icon" aria-hidden="true"></div>
+      <div class="transaction-item__body">
+        <p class="transaction-item__description"></p>
+        <time class="transaction-item__date" datetime=""></time>
+      </div>
+      <div class="transaction-item__meta">
+        <span class="transaction-item__category-badge"></span>
+        <span class="transaction-item__amount"></span>
+      </div>
+      <button
+        class="btn btn--delete"
+        type="button"
+        aria-label="Delete transaction"
+        data-action="delete-transaction"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </li>
+  </template>
+
+  <!-- Application Script -->
+  <script src="js/script.js"></script>
+
+</body>
+</html>

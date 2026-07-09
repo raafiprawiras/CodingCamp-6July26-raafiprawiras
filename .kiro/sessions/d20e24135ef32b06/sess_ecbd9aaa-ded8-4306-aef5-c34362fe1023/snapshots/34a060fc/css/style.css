@@ -1,0 +1,1081 @@
+/* =============================================================
+   style.css — Expense & Budget Visualizer
+   Mobile-first · CSS Variables · Light & Dark themes
+   ============================================================= */
+
+/* -------------------------------------------------------------
+   1. CSS CUSTOM PROPERTIES (Design Tokens)
+   ------------------------------------------------------------- */
+:root {
+  /* Brand */
+  --color-primary:        #6c63ff;
+  --color-primary-hover:  #574fd6;
+  --color-primary-light:  #ede9ff;
+
+  /* Semantic */
+  --color-income:         #22c55e;
+  --color-income-light:   #dcfce7;
+  --color-expense:        #ef4444;
+  --color-expense-light:  #fee2e2;
+  --color-balance:        #6c63ff;
+  --color-balance-light:  #ede9ff;
+
+  /* Neutrals — Light theme */
+  --color-bg:             #f5f5f7;
+  --color-surface:        #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-border:         #e5e7eb;
+  --color-text-primary:   #111827;
+  --color-text-secondary: #6b7280;
+  --color-text-muted:     #9ca3af;
+  --color-placeholder:    #d1d5db;
+
+  /* Unused danger aliases removed — use --color-expense directly */
+
+  /* Typography */
+  --font-family:          'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-size-xs:         0.75rem;
+  --font-size-sm:         0.875rem;
+  --font-size-base:       1rem;
+  --font-size-lg:         1.125rem;
+  --font-size-xl:         1.25rem;
+  --font-size-2xl:        1.5rem;
+  --font-size-3xl:        1.875rem;
+  --font-weight-normal:   400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+  --line-height-tight:    1.25;
+  --line-height-normal:   1.5;
+
+  /* Spacing */
+  --space-1:   0.25rem;
+  --space-2:   0.5rem;
+  --space-3:   0.75rem;
+  --space-4:   1rem;
+  --space-5:   1.25rem;
+  --space-6:   1.5rem;
+  --space-8:   2rem;
+  --space-10:  2.5rem;
+  --space-12:  3rem;
+
+  /* Borders */
+  --radius-sm:   0.375rem;
+  --radius-md:   0.625rem;
+  --radius-lg:   1rem;
+  --radius-xl:   1.25rem;
+  --radius-full: 9999px;
+  --border-width: 1px;
+
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:  0 4px 12px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.05);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,.10), 0 4px 10px rgba(0,0,0,.06);
+  --shadow-card:0 2px 8px rgba(0,0,0,.07);
+
+  /* Transitions */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+
+  /* Layout */
+  --max-width:        1100px;
+  --header-height:    64px;
+  --content-padding:  var(--space-4);
+}
+
+/* -------------------------------------------------------------
+   2. DARK THEME OVERRIDES
+   ------------------------------------------------------------- */
+[data-theme="dark"] {
+  --color-bg:             #0f172a;
+  --color-surface:        #1e293b;
+  --color-surface-raised: #293548;
+  --color-border:         #334155;
+  --color-text-primary:   #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted:     #64748b;
+  --color-placeholder:    #475569;
+  --color-primary-light:  #312e81;
+  --color-income-light:   #14532d;
+  --color-expense-light:  #7f1d1d;
+  --color-balance-light:  #312e81;
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:  0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,.5);
+  --shadow-card:0 2px 8px rgba(0,0,0,.35);
+}
+
+/* -------------------------------------------------------------
+   3. RESET & BASE
+   ------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  transition: background-color var(--transition-normal),
+              color var(--transition-normal);
+}
+
+img, svg, canvas { display: block; max-width: 100%; }
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+ul, ol { list-style: none; }
+
+a { color: inherit; text-decoration: none; }
+
+/* Screen-reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus ring — visible for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* -------------------------------------------------------------
+   4. HEADER
+   ------------------------------------------------------------- */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--header-height);
+  background-color: var(--color-surface);
+  border-bottom: var(--border-width) solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition-normal),
+              border-color var(--transition-normal);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--content-padding);
+}
+
+.app-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.app-title__icon {
+  font-size: var(--font-size-2xl);
+  line-height: 1;
+}
+
+.btn-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg);
+  cursor: pointer;
+  font-size: var(--font-size-lg);
+  transition: background-color var(--transition-fast),
+              border-color var(--transition-fast),
+              transform var(--transition-fast);
+}
+
+.btn-theme-toggle:hover {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: rotate(20deg);
+}
+
+/* -------------------------------------------------------------
+   5. MAIN LAYOUT
+   ------------------------------------------------------------- */
+.app-main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-6) var(--content-padding) var(--space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* Section card wrapper */
+.form-section,
+.chart-section,
+.list-section {
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+  transition: background-color var(--transition-normal),
+              border-color var(--transition-normal);
+}
+
+.section-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+/* Two-column grid: stacked on mobile, side-by-side on desktop */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+@media (min-width: 768px) {
+  .content-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* -------------------------------------------------------------
+   6. SUMMARY CARDS
+   ------------------------------------------------------------- */
+.summary-section {
+  /* no card wrapper — cards themselves are the surfaces */
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 480px) {
+  .summary-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.summary-card {
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  box-shadow: var(--shadow-card);
+  border: var(--border-width) solid transparent;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.summary-card__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-2);
+}
+
+.summary-card__amount {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  word-break: break-all;
+}
+
+/* Balance card */
+.summary-card--balance {
+  background-color: var(--color-balance-light);
+  border-color: var(--color-primary);
+}
+.summary-card--balance .summary-card__label  { color: var(--color-primary); }
+.summary-card--balance .summary-card__amount { color: var(--color-primary); }
+
+/* Balance card — negative state (expenses exceed income) */
+.summary-card--balance.summary-card--negative {
+  background-color: var(--color-expense-light);
+  border-color: var(--color-expense);
+}
+.summary-card--balance.summary-card--negative .summary-card__label  { color: var(--color-expense); }
+.summary-card--balance.summary-card--negative .summary-card__amount { color: var(--color-expense); }
+
+/* Income card */
+.summary-card--income {
+  background-color: var(--color-income-light);
+  border-color: var(--color-income);
+}
+.summary-card--income .summary-card__label  { color: var(--color-income); }
+.summary-card--income .summary-card__amount { color: var(--color-income); }
+
+/* Expense card */
+.summary-card--expense {
+  background-color: var(--color-expense-light);
+  border-color: var(--color-expense);
+}
+.summary-card--expense .summary-card__label  { color: var(--color-expense); }
+.summary-card--expense .summary-card__amount { color: var(--color-expense); }
+
+/* -------------------------------------------------------------
+   7. FORM ELEMENTS (shared)
+   ------------------------------------------------------------- */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.form-group--type {
+  border: none;
+}
+
+.form-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--space-4);
+  background-color: var(--color-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  transition: border-color var(--transition-fast),
+              box-shadow var(--transition-fast),
+              background-color var(--transition-normal);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.form-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.form-input:hover,
+.form-select:hover {
+  border-color: var(--color-text-muted);
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+}
+
+/* Custom select arrow */
+.form-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-4) center;
+  padding-right: var(--space-10);
+  cursor: pointer;
+}
+
+.form-error {
+  font-size: var(--font-size-xs);
+  color: var(--color-expense);
+  min-height: 1em;
+  font-weight: var(--font-weight-medium);
+}
+
+/* -------------------------------------------------------------
+   8. TYPE TOGGLE (Income / Expense radio)
+   ------------------------------------------------------------- */
+.type-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: var(--color-bg);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-1);
+  gap: var(--space-1);
+  transition: background-color var(--transition-normal);
+}
+
+.type-toggle__option {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Hide native radio */
+.type-toggle__option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.type-toggle__label {
+  display: block;
+  text-align: center;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  transition: background-color var(--transition-fast),
+              color var(--transition-fast);
+  user-select: none;
+}
+
+/* Checked states */
+#type-income:checked + .type-toggle__label {
+  background-color: var(--color-income);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+#type-expense:checked + .type-toggle__label {
+  background-color: var(--color-expense);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.type-toggle__option:hover .type-toggle__label {
+  color: var(--color-text-primary);
+  background-color: var(--color-border);
+}
+
+/* Keep active state on hover */
+#type-income:checked + .type-toggle__label:hover,
+#type-expense:checked + .type-toggle__label:hover {
+  background-color: var(--color-income);
+  color: #ffffff;
+}
+#type-expense:checked + .type-toggle__label:hover {
+  background-color: var(--color-expense);
+}
+
+/* Focus ring on keyboard nav */
+.type-toggle__option input:focus-visible + .type-toggle__label {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* -------------------------------------------------------------
+   9. BUTTONS
+   ------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  padding: var(--space-2) var(--space-5);
+  height: 44px;
+  transition: background-color var(--transition-fast),
+              border-color var(--transition-fast),
+              transform var(--transition-fast),
+              box-shadow var(--transition-fast);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* Primary — full-width submit */
+.btn--primary {
+  width: 100%;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 6px rgba(108, 99, 255, 0.35);
+  margin-top: var(--space-2);
+}
+
+.btn--primary:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.45);
+}
+
+/* Secondary — inline */
+.btn--secondary {
+  background-color: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.btn--secondary:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+/* Sort buttons */
+.btn--sort {
+  height: 32px;
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+  transition: background-color var(--transition-fast),
+              border-color var(--transition-fast),
+              color var(--transition-fast),
+              transform var(--transition-fast);
+}
+
+.btn--sort:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.btn--sort-active,
+.btn--sort[aria-pressed="true"] {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.btn--sort-active:hover,
+.btn--sort[aria-pressed="true"]:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  color: #ffffff;
+}
+
+.btn--sort:active {
+  transform: scale(0.95);
+}
+
+/* Delete button */
+.btn--delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: var(--radius-full);
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast),
+              color var(--transition-fast);
+}
+
+.btn--delete:hover {
+  background-color: var(--color-expense-light);
+  color: var(--color-expense);
+}
+
+/* -------------------------------------------------------------
+   10. CUSTOM CATEGORY PANEL
+   ------------------------------------------------------------- */
+.custom-category {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.custom-category__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.custom-category__form {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.custom-category__form .form-input {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
+.custom-category__form .form-error {
+  flex-basis: 100%;
+}
+
+/* -------------------------------------------------------------
+   11. CHART SECTION
+   ------------------------------------------------------------- */
+.chart-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+}
+
+.chart-wrapper canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chart-empty-state {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  padding: var(--space-8) var(--space-4);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-4);
+  line-height: var(--line-height-normal);
+}
+
+/* -------------------------------------------------------------
+   12. TRANSACTION LIST — header & sort controls
+   ------------------------------------------------------------- */
+.list-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+@media (min-width: 480px) {
+  .list-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .list-header .section-title {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.sort-controls__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+/* -------------------------------------------------------------
+   13. TRANSACTION LIST — items
+   ------------------------------------------------------------- */
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.transaction-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background-color: var(--color-surface-raised);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: box-shadow var(--transition-fast),
+              border-color var(--transition-fast),
+              background-color var(--transition-normal);
+}
+
+.transaction-item:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--color-text-muted);
+}
+
+/* Icon circle */
+.transaction-item__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+  background-color: var(--color-bg);
+}
+
+/* Income / Expense icon tinting (set by JS via data-type attribute) */
+.transaction-item[data-type="income"] .transaction-item__icon {
+  background-color: var(--color-income-light);
+}
+
+.transaction-item[data-type="expense"] .transaction-item__icon {
+  background-color: var(--color-expense-light);
+}
+
+/* Body — description + date */
+.transaction-item__body {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.transaction-item__description {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.transaction-item__date {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  display: block;
+  margin-top: var(--space-1);
+}
+
+/* Meta — badge + amount */
+.transaction-item__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.transaction-item__amount {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+.transaction-item[data-type="income"] .transaction-item__amount {
+  color: var(--color-income);
+}
+
+.transaction-item[data-type="expense"] .transaction-item__amount {
+  color: var(--color-expense);
+}
+
+/* Category badge */
+.transaction-item__category-badge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------
+   14. EMPTY STATES
+   ------------------------------------------------------------- */
+.list-empty-state {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  padding: var(--space-10) var(--space-4);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+/* JS will toggle visibility of empty states */
+.transaction-list:not(:empty) ~ .list-empty-state {
+  display: none;
+}
+
+/* -------------------------------------------------------------
+   15. FOOTER
+   ------------------------------------------------------------- */
+.app-footer {
+  background-color: var(--color-surface);
+  border-top: var(--border-width) solid var(--color-border);
+  padding: var(--space-5) var(--content-padding);
+  text-align: center;
+  transition: background-color var(--transition-normal),
+              border-color var(--transition-normal);
+}
+
+.app-footer__text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* -------------------------------------------------------------
+   16. RESPONSIVE — tablet & up (768px)
+   ------------------------------------------------------------- */
+@media (min-width: 768px) {
+  :root {
+    --content-padding: var(--space-8);
+  }
+
+  .app-main {
+    gap: var(--space-8);
+    padding-top: var(--space-8);
+  }
+
+  .form-section,
+  .chart-section,
+  .list-section {
+    padding: var(--space-8);
+  }
+
+  .app-title {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+/* -------------------------------------------------------------
+   17. RESPONSIVE — desktop (1024px+)
+   ------------------------------------------------------------- */
+@media (min-width: 1024px) {
+  :root {
+    --content-padding: var(--space-10);
+  }
+
+  .app-main {
+    padding-top: var(--space-10);
+  }
+
+  .summary-card__amount {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+/* -------------------------------------------------------------
+   18. REDUCED MOTION
+   ------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* -------------------------------------------------------------
+   20. THEME UTILITIES
+   ------------------------------------------------------------- */
+
+/**
+ * Suppress ALL transitions on page load so CSS variables resolve
+ * instantly — prevents a white flash before JS sets the saved theme.
+ * The 'no-transition' class is removed by JS after the load event.
+ */
+.no-transition *,
+.no-transition *::before,
+.no-transition *::after {
+  transition-duration: 0ms !important;
+  animation-duration:  0ms !important;
+}
+
+/* Theme toggle icon — fade on swap */
+.theme-icon {
+  display: inline-block;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  line-height: 1;
+}
+
+.btn-theme-toggle:active .theme-icon {
+  opacity: 0.6;
+  transform: scale(0.85) rotate(30deg);
+}
+
+/* -------------------------------------------------------------
+   21. CATEGORY TAGS
+   ------------------------------------------------------------- */
+.category-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  min-height: 0;
+}
+
+/* Individual tag chip */
+.category-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  border: var(--border-width) solid var(--color-border);
+  background-color: var(--color-bg);
+  color: var(--color-text-secondary);
+  transition: background-color var(--transition-fast),
+              border-color var(--transition-fast);
+  white-space: nowrap;
+}
+
+/* Default categories — subtle, no delete affordance */
+.category-tag--default {
+  opacity: 0.75;
+}
+
+/* Custom categories — slightly elevated */
+.category-tag--custom {
+  background-color: var(--color-surface-raised);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Colour dot */
+.category-tag__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+/* Label */
+.category-tag__label {
+  line-height: 1;
+}
+
+/* Remove button */
+.category-tag__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: var(--space-1);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background-color: transparent;
+  color: var(--color-primary);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast),
+              color var(--transition-fast);
+}
+
+.category-tag__remove:hover {
+  background-color: var(--color-expense);
+  color: #ffffff;
+}
+
+.category-tag__remove:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+/* -------------------------------------------------------------
+   19. FORM VALIDATION STATES
+   ------------------------------------------------------------- */
+
+/* Invalid input */
+.form-input.is-invalid,
+.form-select.is-invalid {
+  border-color: var(--color-expense);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+/* Valid input — only show after user has interacted */
+.form-input.is-valid,
+.form-select.is-valid {
+  border-color: var(--color-income);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+}
+
+/* Error message — visible */
+.form-error:not(:empty) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.form-error:not(:empty)::before {
+  content: '⚠';
+  font-size: var(--font-size-xs);
+  flex-shrink: 0;
+}
+
+/* Success toast notification */
+.toast {
+  position: fixed;
+  bottom: var(--space-6);
+  left: 50%;
+  transform: translateX(-50%) translateY(calc(100% + var(--space-6)));
+  background-color: var(--color-income);
+  color: #ffffff;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg);
+  z-index: 999;
+  white-space: nowrap;
+  transition: transform var(--transition-normal);
+  pointer-events: none;
+}
+
+.toast.toast--visible {
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.toast--error {
+  background-color: var(--color-expense);
+}

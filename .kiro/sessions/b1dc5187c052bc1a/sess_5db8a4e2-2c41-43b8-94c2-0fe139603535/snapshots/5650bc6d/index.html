@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RevoU Coding Camp</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f4f8;
+      color: #333;
+    }
+
+    header {
+      background-color: #1a1a2e;
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      letter-spacing: 1px;
+    }
+
+    header span {
+      font-size: 0.9rem;
+      color: #a0aec0;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #16213e, #0f3460);
+      color: white;
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .hero h2 {
+      font-size: 2.4rem;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: #cbd5e0;
+      max-width: 600px;
+      margin: 0 auto 30px;
+      line-height: 1.6;
+    }
+
+    .hero a {
+      background-color: #e94560;
+      color: white;
+      padding: 14px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+
+    .hero a:hover {
+      background-color: #c73652;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px;
+      padding: 60px 40px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px 24px;
+      width: 280px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .card .icon {
+      font-size: 2.4rem;
+      margin-bottom: 14px;
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #1a1a2e;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: #718096;
+      line-height: 1.6;
+    }
+
+    footer {
+      background-color: #1a1a2e;
+      color: #a0aec0;
+      text-align: center;
+      padding: 24px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>RevoU Coding Camp</h1>
+    <span>Belajar Coding, Raih Karir Impian</span>
+  </header>
+
+  <section class="hero">
+    <h2>Selamat Datang di Coding Camp!</h2>
+    <p>
+      Program intensif untuk belajar pemrograman dari nol hingga siap kerja.
+      Dipandu oleh mentor berpengalaman dan kurikulum yang relevan dengan industri.
+    </p>
+    <a href="#">Mulai Belajar</a>
+  </section>
+
+  <section class="cards">
+    <div class="card">
+      <div class="icon">💻</div>
+      <h3>Web Development</h3>
+      <p>Pelajari HTML, CSS, JavaScript, dan framework modern untuk membangun aplikasi web profesional.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">📊</div>
+      <h3>Data Analytics</h3>
+      <p>Kuasai analisis data menggunakan Python, SQL, dan tools visualisasi data terkini.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🚀</div>
+      <h3>Product Management</h3>
+      <p>Pahami siklus pengembangan produk digital dari ideasi hingga peluncuran ke pasar.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🎨</div>
+      <h3>UI/UX Design</h3>
+      <p>Rancang pengalaman pengguna yang intuitif dan tampilan visual yang menarik.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 RevoU Coding Camp. Semua hak dilindungi.</p>
+  </footer>
+
+</body>
+</html>

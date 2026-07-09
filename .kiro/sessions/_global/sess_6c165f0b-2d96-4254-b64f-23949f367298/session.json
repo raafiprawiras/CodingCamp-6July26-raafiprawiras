@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "sess_6c165f0b-2d96-4254-b64f-23949f367298",
+  "title": "New Session",
+  "agentMode": "vibe",
+  "workspacePaths": [],
+  "createdAt": "2026-07-03T11:11:23.840Z",
+  "lastModifiedAt": "2026-07-03T11:11:23.870Z",
+  "semanticReviewEnabled": true,
+  "ftaEnabled": false,
+  "specPlanEnabled": false,
+  "specWorkflow": "quick",
+  "specSkipClarificationEnabled": true,
+  "dataModelVersion": 1
+}

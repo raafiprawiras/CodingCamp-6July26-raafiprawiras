@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1.0.0",
+  "dataModelVersion": 1,
+  "id": "sess_01f425c7-b4f6-4f23-9c21-7acb77eb448b",
+  "title": "New Session",
+  "agentMode": "vibe",
+  "workspacePaths": [
+    "c:\\Users\\Aspire 7\\GitHub\\tugas-bab6-tim3"
+  ],
+  "createdAt": "2026-07-06T13:59:46.300Z",
+  "lastModifiedAt": "2026-07-06T13:59:46.877Z",
+  "semanticReviewEnabled": true,
+  "ftaEnabled": false,
+  "specPlanEnabled": false,
+  "specWorkflow": "quick",
+  "specSkipClarificationEnabled": true,
+  "modelId": "auto",
+  "autopilot": true
+}

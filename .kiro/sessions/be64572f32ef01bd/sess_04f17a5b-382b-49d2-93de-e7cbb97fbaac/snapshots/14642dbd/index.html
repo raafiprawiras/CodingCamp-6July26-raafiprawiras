@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nepal van Java - Dusun Butuh Magelang | Website Resmi Pariwisata</title>
+    <meta name="description" content="Selamat datang di website resmi Desa Wisata Nepal van Java, Dusun Butuh, Kaliangkrik, Magelang. Jelajahi keindahan panorama alam perumahan lereng Gunung Sumbing.">
+    <meta name="keywords" content="Nepal van Java, Dusun Butuh, Kaliangkrik, Magelang, Gunung Sumbing, Wisata Magelang, Desa Wisata">
+    <meta name="author" content="Pemerintah Desa Wisata Dusun Butuh">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nepalvanjava.id/">
+    <meta property="og:title" content="Nepal van Java - Dusun Butuh Magelang | Website Resmi Pariwisata">
+    <meta property="og:description" content="Jelajahi keindahan panorama alam perumahan lereng Gunung Sumbing di Desa Wisata Nepal van Java.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?q=80&w=1200&auto=format&fit=crop">
+    <link rel="stylesheet" href="./assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/layout.css">
+    <link rel="stylesheet" href="./assets/css/pages.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+</head>
+<body class="home-page">
+
+    <!-- ===== NAVBAR ===== -->
+    <header id="main-header">
+        <nav class="nav-container">
+            <a href="/" class="logo" aria-label="Nepal van Java Homepage">
+                <span class="logo-accent">Nepal</span> van Java
+            </a>
+            <ul class="nav-menu" id="primary-navigation">
+                <li class="nav-item">
+                    <a href="/" class="nav-link rolling-link active" data-lang-key="nav_home">
+                        <span class="rolling-text-wrap">
+                            <span class="rolling-text-front">Beranda</span>
+                            <span class="rolling-text-back">Beranda</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/pages/profil.html" class="nav-link rolling-link" data-lang-key="nav_profil">
+                        <span class="rolling-text-wrap">
+                            <span class="rolling-text-front">Profil</span>
+                            <span class="rolling-text-back">Profil</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/pages/destinasi.html" class="nav-link rolling-link" data-lang-key="nav_destinasi">
+                        <span class="rolling-text-wrap">
+                            <span class="rolling-text-front">Destinasi</span>
+                            <span class="rolling-text-back">Destinasi</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/pages/kuliner.html" class="nav-link rolling-link" data-lang-key="nav_kuliner">
+                        <span class="rolling-text-wrap">
+                            <span class="rolling-text-front">Kuliner</span>
+                            <span class="rolling-text-back">Kuliner</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/pages/homestay.html" class="nav-link rolling-link" data-lang-key="nav_homestay">
+                        <span class="rolling-text-wrap">
+                            <span class="rolling-text-front">Homestay</span>
+                            <span class="rolling-text-back">Homestay</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/pages/galeri.html" class="nav-link rolling-link" data-lang-key="nav_galeri">
+                        <span class="rolling-text-wrap">
+                            <span class="rolling-text-front">Galeri</span>
+                            <span class="rolling-text-back">Galeri</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/pages/kontak.html" class="nav-link rolling-link" data-lang-key="nav_kontak">
+                        <span class="rolling-text-wrap">
+                            <span class="rolling-text-front">Kontak</span>
+                            <span class="rolling-text-back">Kontak</span>
+                        </span>
+                    </a>
+                </li>
+            </ul>
+            <div class="lang-switcher">
+                <a href="#" class="lang-btn" id="lang-en" title="English" aria-label="Switch to English">
+                    <img src="https://flagcdn.com/24x18/us.png" alt="English" class="flag-icon-rect">
+                    <span class="lang-text">EN</span>
+                </a>
+                <a href="#" class="lang-btn active" id="lang-id" title="Indonesia" aria-label="Switch to Indonesian">
+                    <img src="https://flagcdn.com/24x18/id.png" alt="Indonesia" class="flag-icon-rect">
+                    <span class="lang-text">ID</span>
+                </a>
+            </div>
+            <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span class="hamburger"></span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main>
+
+        <!-- ================================================
+             SECTION 1: CINEMATIC HERO
+             Latar belakang penuh layar dengan overlay gradien,
+             tagline, judul, deskripsi, dan tombol CTA.
+        ================================================ -->
+        <section id="hero" class="cinematic-hero">
+            <div class="hero-image-overlay"></div>
+            <div class="hero-content cinematic-hero-content">
+                <span class="hero-tagline" data-lang-key="hero_tagline">Desa Wisata • Magelang, Jawa Tengah</span>
+                <h1 class="hero-title" data-lang-key="hero_title">Surga Tersembunyi di Lereng Sumbing</h1>
+                <p class="hero-subtitle" data-lang-key="hero_subtitle">Merasakan kemegahan panorama gunung, lautan awan, dan pemukiman bertumpuk ikonik yang dijuluki "Nepal van Java".</p>
+                <!-- Hero CTA Buttons -->
+                <div class="hero-cta-group">
+                    <a href="/pages/destinasi.html" class="btn-hero-primary" data-lang-key="hero_cta_primary">Jelajahi Destinasi</a>
+                    <a href="/pages/kontak.html" class="btn-hero-ghost" data-lang-key="hero_cta_ghost">Rencanakan Trip</a>
+                </div>
+            </div>
+            <!-- Scroll Down Indicator -->
+            <div class="scroll-indicator">
+                <span data-lang-key="scroll_text">Scroll</span>
+                <svg width="16" height="24" viewBox="0 0 16 24" fill="none" stroke="#fff" stroke-width="1.5">
+                    <rect x="1" y="1" width="14" height="22" rx="7" ry="7"/>
+                    <line x1="8" y1="6" x2="8" y2="10" class="scroll-dot"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- ================================================
+             SECTION 2: HIGHLIGHTS STRIP
+             Empat keunggulan Dusun Butuh dalam layout
+             horizontal — ikon, judul, deskripsi singkat.
+        ================================================ -->
+        <section id="highlights" class="highlights-strip">
+            <div class="container">
+                <div class="highlights-grid">
+                    <div class="highlight-item animate-on-scroll">
+                        <div class="highlight-icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        </div>
+                        <div class="highlight-text">
+                            <h3 data-lang-key="hl_title1">1.620 mdpl</h3>
+                            <p data-lang-key="hl_desc1">Pemukiman tertinggi di lereng Gunung Sumbing</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item animate-on-scroll" style="transition-delay:0.1s">
+                        <div class="highlight-icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                        </div>
+                        <div class="highlight-text">
+                            <h3 data-lang-key="hl_title2">Sunrise Magis</h3>
+                            <p data-lang-key="hl_desc2">Lautan awan setiap pagi yang tak tertandingi</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item animate-on-scroll" style="transition-delay:0.2s">
+                        <div class="highlight-icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        </div>
+                        <div class="highlight-text">
+                            <h3 data-lang-key="hl_title3">100+ Homestay</h3>
+                            <p data-lang-key="hl_desc3">Penginapan nyaman di tengah panorama pegunungan</p>
+                        </div>
+                    </div>
+                    <div class="highlight-item animate-on-scroll" style="transition-delay:0.3s">
+                        <div class="highlight-icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        </div>
+                        <div class="highlight-text">
+                            <h3 data-lang-key="hl_title4">Akses Mudah</h3>
+                            <p data-lang-key="hl_desc4">Hanya 2 jam dari Yogyakarta dan Semarang</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================
+             SECTION 3: STICKY STORY
+             Narasi dua kolom — teks kiri, gambar sticky kanan.
+        ================================================ -->
+        <section id="story" class="sticky-story-section">
+            <div class="container">
+                <div class="story-grid">
+                    <div class="story-text-col animate-on-scroll">
+                        <span class="story-tagline" data-lang-key="story_tagline">DUSUN BUTUH</span>
+                        <h2 class="story-title" data-lang-key="story_title">Menyentuh Awan di 1.620 mdpl</h2>
+                        <p class="story-p" data-lang-key="story_p1">Dusun Butuh merupakan pemukiman tertinggi di lereng Gunung Sumbing, Kaliangkrik, Magelang. Terhampar indah pada elevasi 1.620 meter di atas permukaan laut, dusun ini menawarkan pemandangan magis pemukiman penduduk yang bertumpuk rapi di lereng bukit, menyerupai arsitektur eksotis khas negara Nepal.</p>
+                        <p class="story-p" data-lang-key="story_p2">Setiap pagi, kabut tipis dan lautan awan berarak perlahan menyelimuti atap-atap rumah warga, menciptakan sensasi luar biasa seolah Anda sedang berdiri di atas awan. Udara pegunungan yang sangat bersih dan dingin berpadu harmonis dengan kehangatan senyuman ramah penduduk lokal yang menyambut setiap langkah perjalanan Anda.</p>
+                        <p class="story-p" data-lang-key="story_p3">Bukan sekadar destinasi wisata, tempat ini adalah pelarian sempurna dari hiruk-pikuk kehidupan kota. Di sini, Anda dapat kembali menyatu dengan alam, menikmati hijaunya ladang sayur berundak, menghirup aroma kopi arabika khas Kaliangkrik, dan menemukan kedamaian yang sejati.</p>
+                        <a href="/pages/profil.html" class="story-read-more" data-lang-key="story_cta">Baca Selengkapnya &rarr;</a>
+                    </div>
+                    <div class="story-image-col">
+                        <div class="sticky-image-wrapper animate-on-scroll" style="transition-delay: 0.2s;">
+                            <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=800&auto=format&fit=crop" alt="Pemandangan Dusun Butuh di 1.620 mdpl" class="story-portrait-img" loading="lazy">
+                            <!-- Badge elevasi -->
+                            <div class="story-img-badge">
+                                <strong>1.620</strong>
+                                <span>mdpl</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================
+             SECTION 4: FLOATING BENTO DESTINATIONS
+             Grid asimetris tiga destinasi utama.
+        ================================================ -->
+        <section id="bento" class="floating-bento-section">
+            <div class="container">
+                <div class="bento-header animate-on-scroll">
+                    <span class="bento-tagline" data-lang-key="bento_tagline">EKSPLORASI</span>
+                    <h2 class="bento-section-title" data-lang-key="bento_title">Jelajahi Sudut Dusun</h2>
+                </div>
+                <div class="bento-grid">
+                    <!-- Card 1: Large — Sunrise Point -->
+                    <div class="bento-card bento-card-large animate-on-scroll">
+                        <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?q=80&w=1200&auto=format&fit=crop" alt="Sunrise Point Sumbing" class="bento-img" loading="lazy">
+                        <div class="bento-label-always">
+                            <span class="bento-label-cat" data-lang-key="bento_cat_viewpoint">Panorama</span>
+                        </div>
+                        <div class="bento-overlay-glass">
+                            <h3 class="bento-card-title">
+                                <a href="/pages/destinasi.html" class="rolling-link" data-lang-key="bento_dest1_title">
+                                    <span class="rolling-text-wrap">
+                                        <span class="rolling-text-front">Sunrise Point Sumbing</span>
+                                        <span class="rolling-text-back">Sunrise Point Sumbing</span>
+                                    </span>
+                                </a>
+                            </h3>
+                            <p class="bento-card-desc" data-lang-key="bento_dest1_desc">Menyaksikan detik-detik terbitnya matahari di atas lautan awan yang magis.</p>
+                            <a href="/pages/destinasi.html" class="bento-card-link" data-lang-key="dest_link">Lihat Detail &rarr;</a>
+                        </div>
+                    </div>
+                    <!-- Card 2: Medium — Lembah Sumbing -->
+                    <div class="bento-card bento-card-medium animate-on-scroll" style="transition-delay: 0.15s;">
+                        <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop" alt="Lembah Sumbing" class="bento-img" loading="lazy">
+                        <div class="bento-label-always">
+                            <span class="bento-label-cat" data-lang-key="bento_cat_nature">Alam</span>
+                        </div>
+                        <div class="bento-overlay-glass">
+                            <h3 class="bento-card-title">
+                                <a href="/pages/destinasi.html" class="rolling-link" data-lang-key="bento_dest2_title">
+                                    <span class="rolling-text-wrap">
+                                        <span class="rolling-text-front">Lembah Sumbing</span>
+                                        <span class="rolling-text-back">Lembah Sumbing</span>
+                                    </span>
+                                </a>
+                            </h3>
+                            <p class="bento-card-desc" data-lang-key="bento_dest2_desc">Perkebunan sayur hijau berundak asri yang memanjakan mata.</p>
+                            <a href="/pages/destinasi.html" class="bento-card-link" data-lang-key="dest_link">Lihat Detail &rarr;</a>
+                        </div>
+                    </div>
+                    <!-- Card 3: Tall — Teras Nepal -->
+                    <div class="bento-card bento-card-tall animate-on-scroll" style="transition-delay: 0.3s;">
+                        <img src="https://images.unsplash.com/photo-1470770903676-69b98201ea1c?q=80&w=800&auto=format&fit=crop" alt="Teras Nepal" class="bento-img" loading="lazy">
+                        <div class="bento-label-always">
+                            <span class="bento-label-cat" data-lang-key="bento_cat_iconic">Ikonik</span>
+                        </div>
+                        <div class="bento-overlay-glass">
+                            <h3 class="bento-card-title">
+                                <a href="/pages/destinasi.html" class="rolling-link" data-lang-key="bento_dest3_title">
+                                    <span class="rolling-text-wrap">
+                                        <span class="rolling-text-front">Teras Nepal</span>
+                                        <span class="rolling-text-back">Teras Nepal</span>
+                                    </span>
+                                </a>
+                            </h3>
+                            <p class="bento-card-desc" data-lang-key="bento_dest3_desc">Sudut pandang terbaik menikmati lanskap rumah bertumpuk Dusun Butuh.</p>
+                            <a href="/pages/destinasi.html" class="bento-card-link" data-lang-key="dest_link">Lihat Detail &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tombol lihat semua destinasi -->
+                <div class="bento-footer-cta animate-on-scroll">
+                    <a href="/pages/destinasi.html" class="btn-bento-all" data-lang-key="bento_see_all">Lihat Semua Destinasi &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================
+             SECTION 5: TESTIMONIALS / KUTIPAN PENGUNJUNG
+             Tiga kartu kutipan pengunjung dalam horizontal grid.
+        ================================================ -->
+        <section id="testimonials" class="testimonials-section">
+            <div class="container">
+                <div class="testimonials-header animate-on-scroll">
+                    <span class="testi-tagline" data-lang-key="testi_tagline">CERITA PENGUNJUNG</span>
+                    <h2 class="testi-section-title" data-lang-key="testi_title">Kata Mereka yang Sudah Merasakan</h2>
+                </div>
+                <div class="testimonials-grid">
+                    <!-- Testimoni 1 -->
+                    <div class="testi-card animate-on-scroll">
+                        <div class="testi-stars" aria-label="5 bintang">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <blockquote class="testi-quote" data-lang-key="testi_q1">"Pemandangan pagi hari di sini benar-benar di luar kata-kata. Kabut yang menyelimuti desa saat sunrise adalah pengalaman paling magis yang pernah kami rasakan dalam perjalanan kami di Indonesia."</blockquote>
+                        <div class="testi-author">
+                            <img src="https://i.pravatar.cc/48?img=11" alt="Rina Kusuma" class="testi-avatar" loading="lazy">
+                            <div class="testi-author-info">
+                                <strong data-lang-key="testi_name1">Rina Kusuma</strong>
+                                <span data-lang-key="testi_from1">Yogyakarta</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Testimoni 2 -->
+                    <div class="testi-card testi-card-featured animate-on-scroll" style="transition-delay:0.15s">
+                        <div class="testi-stars" aria-label="5 bintang">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <blockquote class="testi-quote" data-lang-key="testi_q2">"Nepal van Java memang bukan nama yang berlebihan. Rumah-rumah bertumpuk di lereng bukit, diselimuti awan setiap pagi — persis seperti foto-foto di Nepal. Homestay-nya bersih dan penduduknya sangat ramah!"</blockquote>
+                        <div class="testi-author">
+                            <img src="https://i.pravatar.cc/48?img=32" alt="Bima Arfan" class="testi-avatar" loading="lazy">
+                            <div class="testi-author-info">
+                                <strong data-lang-key="testi_name2">Bima Arfan</strong>
+                                <span data-lang-key="testi_from2">Jakarta</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Testimoni 3 -->
+                    <div class="testi-card animate-on-scroll" style="transition-delay:0.3s">
+                        <div class="testi-stars" aria-label="5 bintang">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <blockquote class="testi-quote" data-lang-key="testi_q3">"Saya sudah keliling berbagai desa wisata di Jawa Tengah, dan Dusun Butuh adalah yang paling mengesankan. Udaranya segar, pemandangannya spektakuler, dan kopi lokalnya luar biasa nikmat."</blockquote>
+                        <div class="testi-author">
+                            <img src="https://i.pravatar.cc/48?img=47" alt="Dewi Santoso" class="testi-avatar" loading="lazy">
+                            <div class="testi-author-info">
+                                <strong data-lang-key="testi_name3">Dewi Santoso</strong>
+                                <span data-lang-key="testi_from3">Semarang</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1.0.0",
+  "dataModelVersion": 1,
+  "id": "sess_ca2bf9dc-f8bc-42ed-84f2-8a3a22cad1d7",
+  "title": "New Session",
+  "agentMode": "vibe",
+  "workspacePaths": [
+    "c:\\Users\\Aspire 7\\theprawiras"
+  ],
+  "createdAt": "2026-07-03T11:17:27.574Z",
+  "lastModifiedAt": "2026-07-04T18:08:39.263Z",
+  "autopilot": true,
+  "semanticReviewEnabled": true,
+  "ftaEnabled": false,
+  "specPlanEnabled": false,
+  "specWorkflow": "quick",
+  "specSkipClarificationEnabled": true,
+  "modelId": "auto"
+}

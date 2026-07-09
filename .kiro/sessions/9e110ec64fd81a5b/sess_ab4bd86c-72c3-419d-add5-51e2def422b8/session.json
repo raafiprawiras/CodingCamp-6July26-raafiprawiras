@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0.0",
+  "dataModelVersion": 1,
+  "id": "sess_ab4bd86c-72c3-419d-add5-51e2def422b8",
+  "title": "buatkan html sederhana hello world",
+  "agentMode": "vibe",
+  "workspacePaths": [
+    "c:\\Users\\Aspire 7\\revou-coding-camp"
+  ],
+  "createdAt": "2026-07-06T13:15:13.626Z",
+  "lastModifiedAt": "2026-07-06T13:39:37.558Z",
+  "modelId": "minimax-m2.1",
+  "autopilot": true,
+  "semanticReviewEnabled": true,
+  "ftaEnabled": false,
+  "specPlanEnabled": false,
+  "specWorkflow": "quick",
+  "specSkipClarificationEnabled": true,
+  "status": "idle"
+}

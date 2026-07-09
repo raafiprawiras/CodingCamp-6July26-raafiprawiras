@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0.0",
+  "dataModelVersion": 1,
+  "id": "sess_ecbd9aaa-ded8-4306-aef5-c34362fe1023",
+  "title": "GitHub Deployment Prep",
+  "agentMode": "vibe",
+  "workspacePaths": [
+    "c:\\Users\\Aspire 7\\GitHub\\CodingCamp-6July26-raafiprawiras"
+  ],
+  "createdAt": "2026-07-08T14:14:55.558Z",
+  "lastModifiedAt": "2026-07-08T15:46:49.693Z",
+  "modelId": "auto",
+  "autopilot": true,
+  "semanticReviewEnabled": true,
+  "ftaEnabled": false,
+  "specPlanEnabled": false,
+  "specWorkflow": "quick",
+  "specSkipClarificationEnabled": true,
+  "description": "Creating .gitignore, README.md, and making the initial commit to prepare the project for GitHub Pages deployment.",
+  "status": "failed"
+}

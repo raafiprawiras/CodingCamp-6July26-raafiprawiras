@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0.0",
+  "dataModelVersion": 1,
+  "id": "sess_04f17a5b-382b-49d2-93de-e7cbb97fbaac",
+  "title": "Redesign Landing Page Nepal van Java",
+  "agentMode": "vibe",
+  "workspacePaths": [
+    "c:\\Users\\Aspire 7\\nepal-van-java"
+  ],
+  "createdAt": "2026-07-04T18:09:26.204Z",
+  "lastModifiedAt": "2026-07-04T18:38:48.463Z",
+  "modelId": "auto",
+  "autopilot": true,
+  "semanticReviewEnabled": true,
+  "ftaEnabled": false,
+  "specPlanEnabled": false,
+  "specWorkflow": "quick",
+  "specSkipClarificationEnabled": true,
+  "description": "Landing page Nepal van Java telah didesain ulang dari atas ke bawah — 3 file diperbarui: index.html, pages.css, dan main.js.",
+  "status": "idle"
+}

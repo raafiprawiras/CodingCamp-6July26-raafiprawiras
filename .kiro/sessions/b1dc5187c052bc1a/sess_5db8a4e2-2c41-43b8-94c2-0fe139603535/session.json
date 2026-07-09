@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0.0",
+  "dataModelVersion": 1,
+  "id": "sess_5db8a4e2-2c41-43b8-94c2-0fe139603535",
+  "title": "buatkan file html yang bisa di tampilkan di browser",
+  "agentMode": "vibe",
+  "workspacePaths": [
+    "c:\\Users\\Aspire 7\\OneDrive\\Documents\\GitHub\\revou-coding-camp"
+  ],
+  "createdAt": "2026-07-06T13:48:42.440Z",
+  "lastModifiedAt": "2026-07-06T13:49:25.670Z",
+  "modelId": "auto",
+  "autopilot": true,
+  "semanticReviewEnabled": true,
+  "ftaEnabled": false,
+  "specPlanEnabled": false,
+  "specWorkflow": "quick",
+  "specSkipClarificationEnabled": true,
+  "status": "idle"
+}
